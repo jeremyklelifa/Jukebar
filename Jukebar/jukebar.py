@@ -16,6 +16,40 @@ from pycaw.pycaw import AudioUtilities
 
 musics = []
 MUSIC_DIRECTORY = "interrupt_songs"
+jukebar_mixer = JukebarMixerWindows()
+
+
+class JukebarMixerAbstract(object):
+    """
+    Base mixer class with simple mixer actions.
+    """
+
+    def mute_all(self):
+        raise NotImplementedError
+
+    def unmute_pid(self, pid):
+        raise NotImplementedError
+
+    def unmute_current_pid(self, pid):
+        """
+        Unmutes the current running process.
+        """
+        current_pid = psutil.Process().pid
+        self.unmute_pid(current_pid)
+
+
+class JukebarMixerWindows(JukebarMixerAbstract):
+    """
+    Base mixer class with simple mixer actions.
+    """
+
+    def unmute_pid(self, pid):
+        sessions = AudioUtilities.GetAllSessions()
+        for session in sessions:
+            volume = session.SimpleAudioVolume
+            if session.Process and session.Process.pid == pid:
+                volume.SetMute(0, None)
+
 
 def load_mp3_files():
     """
@@ -24,17 +58,6 @@ def load_mp3_files():
     files = os.listdir(MUSIC_DIRECTORY)
     global musics
     musics.extend(files)
-
-def unmute_myself():
-    """
-    Unmute the current running process.
-    """
-    current_pid = psutil.Process().pid
-    sessions = AudioUtilities.GetAllSessions()
-    for session in sessions:
-        volume = session.SimpleAudioVolume
-        if session.Process and session.Process.pid == current_pid:
-            volume.SetMute(0, None)
 
 def mute_all(mute=True):
     """
@@ -57,7 +80,7 @@ def play_music(title):
     mixer.init()
     mixer.music.load(title_path)
     mixer.music.play()
-    unmute_myself()
+    jukebar_mixer.unmute_current_pid()
     while mixer.music.get_busy():
         sleep(1)
 
