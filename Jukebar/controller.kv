@@ -1,5 +1,14 @@
 #:kivy 1.0
 
+
+<AboutScreen@Screen>:
+	BoxLayout:
+        orientation: 'vertical'
+		
+		Label:
+			markup: True
+			text: '[size=45][b][color=00BFFF]Jukebar for drinkers[/color][/b][/size]\nNew line.'
+
 <MenuScreen@Screen>:
 	BoxLayout:
         orientation: 'vertical'
@@ -14,6 +23,9 @@
 			text: u'Settings'
 		Button:
 			text: u'About'
+			on_press:
+				root.manager.current = 'about'
+				root.manager.transition.direction = 'left'
 		Button:
 			text: u'Close'
 			on_press: app.stop()
@@ -55,3 +67,7 @@
         MenuScreen:
             id: menu_screen
             name: 'menu'
+
+        AboutScreen:
+            id: about_screen
+            name: 'about'
