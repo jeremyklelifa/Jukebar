@@ -60,7 +60,6 @@
     <Content Include="mockups\settings_screen.json" />
     <Content Include="mockups\main_screen_menu.json" />
     <Content Include="mockups\main_screen.json" />
-    <Content Include="README.md" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
