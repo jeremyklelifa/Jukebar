@@ -8,6 +8,7 @@ Also take a look at pyglet python module for playing mp3.
 import os
 from random import randint
 from time import sleep
+import psutil
 import wave
 from pygame import mixer # Load the required library
 from pycaw.pycaw import AudioUtilities
@@ -45,6 +46,8 @@ def play_music(title):
     mixer.init()
     mixer.music.load(title_path)
     mixer.music.play()
+    while mixer.music.get_busy():
+        sleep(1)
 
 def play_next_random():
     title_random_index = randint(0, len(musics)-1) # TODO verify lower bound inclusion
