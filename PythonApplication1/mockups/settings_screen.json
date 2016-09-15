@@ -1,0 +1,47 @@
+[
+  {
+    "top": 60,
+    "left": 194,
+    "z_index": 3,
+    "tool": "heading",
+    "text": "Settings",
+    "size": "25",
+    "color": "black"
+  },
+  {
+    "top": 148,
+    "left": 183,
+    "z_index": 3,
+    "tool": "button",
+    "text": "Add musics",
+    "width": 155
+  },
+  {
+    "top": 195,
+    "left": 183,
+    "z_index": 3,
+    "tool": "button",
+    "text": "Modify",
+    "width": 80
+  },
+  {
+    "top": 253,
+    "left": 180,
+    "z_index": 0,
+    "tool": "text",
+    "label": true,
+    "text": "Timer min",
+    "width": 108,
+    "height": 30
+  },
+  {
+    "top": 321,
+    "left": 180,
+    "z_index": 0,
+    "tool": "text",
+    "label": true,
+    "text": "Label",
+    "width": 200,
+    "height": 30
+  }
+]

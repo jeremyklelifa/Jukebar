@@ -1,0 +1,54 @@
+#:kivy 1.0
+
+<MenuScreen@Screen>:
+	BoxLayout:
+        orientation: 'vertical'
+		
+		Button:
+			text: u'Back'
+			on_press:
+				root.manager.current = 'main'
+				root.manager.transition.direction = 'left'
+
+		Button:
+			text: u'Settings'
+		Button:
+			text: u'About'
+
+<MainScreen@Screen>:
+
+    FloatLayout:
+
+		AnchorLayout:
+			anchor_x: 'left'
+			anchor_y: 'top'
+			Button:
+				text: 'Settings'
+				size: 100, 100
+				size_hint: None, None
+				# on_press: root.on_settings_action()
+				on_press:
+					root.manager.current = 'menu'
+					root.manager.transition.direction = 'right'
+
+		AnchorLayout:
+			anchor_x: 'center'
+			anchor_y: 'center'
+			Button:
+				text: 'Start juke'
+				size: 100, 100
+				size_hint: None, None
+				on_press: root.start_juke_action()
+
+				
+<Controller>:
+    
+    ScreenManager:
+
+        MainScreen:
+            id: main_screen
+            name: 'main'
+
+        MenuScreen:
+            id: menu_screen
+            name: 'menu'
