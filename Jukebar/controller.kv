@@ -4,6 +4,12 @@
 <AboutScreen@Screen>:
 	BoxLayout:
         orientation: 'vertical'
+
+		Button:
+			text: u'Back'
+			on_press:
+				root.manager.current = 'menu'
+				root.manager.transition.direction = 'left'
 		
 		Label:
 			markup: True
@@ -25,7 +31,7 @@
 			text: u'About'
 			on_press:
 				root.manager.current = 'about'
-				root.manager.transition.direction = 'left'
+				root.manager.transition.direction = 'right'
 		Button:
 			text: u'Close'
 			on_press: app.stop()
