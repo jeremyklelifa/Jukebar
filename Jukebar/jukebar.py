@@ -25,6 +25,17 @@ def load_mp3_files():
     global musics
     musics.extend(files)
 
+def unmute_myself():
+    """
+    Unmute the current running process.
+    """
+    current_pid = psutil.Process().pid
+    sessions = AudioUtilities.GetAllSessions()
+    for session in sessions:
+        volume = session.SimpleAudioVolume
+        if session.Process and session.Process.pid == current_pid:
+            volume.SetMute(0, None)
+
 def mute_all(mute=True):
     """
     Mutes or unmutes all session depending on the mute parameter.
@@ -46,6 +57,7 @@ def play_music(title):
     mixer.init()
     mixer.music.load(title_path)
     mixer.music.play()
+    unmute_myself()
     while mixer.music.get_busy():
         sleep(1)
 
