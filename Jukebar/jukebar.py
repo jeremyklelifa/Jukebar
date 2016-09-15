@@ -29,9 +29,10 @@ def mute_all(mute=True):
     Mutes or unmutes all session depending on the mute parameter.
     """
     sessions = AudioUtilities.GetAllSessions()
+    mute_int = 1 if mute else 0
     for session in sessions:
         volume = session.SimpleAudioVolume
-        volume.SetMute(mute, None)
+        volume.SetMute(mute_int, None)
 
 def unmute_all():
     mute_all(False)
@@ -78,14 +79,14 @@ def interup():
     fade_up_main_track()
 
 def run_jukebar():
-	""" 
-	Starts the application for testing
-	"""
-	load_mp3_files()
-	MAX_SLEEP_TIME = 10
-	count = 3
-	while count > 0:
-		random_time = randint(1, MAX_SLEEP_TIME)
-		sleep(random_time)
-		interup()
-		count -= 1
+    """ 
+    Starts the application for testing
+    """
+    load_mp3_files()
+    MAX_SLEEP_TIME = 10
+    count = 3
+    while count > 0:
+        random_time = randint(1, MAX_SLEEP_TIME)
+        sleep(random_time)
+        interup()
+        count -= 1
