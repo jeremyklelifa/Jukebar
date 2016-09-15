@@ -24,11 +24,28 @@ class JukebarMixerAbstract(object):
     Base mixer class with simple mixer actions.
     """
 
-    def mute_all(self):
+    def set_mute_all(self, mute=True):
+        """
+        Mutes or unmutes all session depending on the mute parameter.
+        """
         raise NotImplementedError
 
     def unmute_pid(self, pid):
         raise NotImplementedError
+
+    def mute_all(self):
+        """
+        Mutes all sources.
+        """
+        mute = True
+        self.set_mute_all(mute)
+
+    def unmute_all(self):
+        """
+        Unmutes all sources.
+        """
+        mute = True
+        self.set_mute_all(mute)
 
     def unmute_current_pid(self, pid):
         """
@@ -42,6 +59,13 @@ class JukebarMixerWindows(JukebarMixerAbstract):
     """
     Base mixer class with simple mixer actions.
     """
+
+    def set_mute_all(self, mute=True):
+        sessions = AudioUtilities.GetAllSessions()
+        mute_int = 1 if mute else 0
+        for session in sessions:
+            volume = session.SimpleAudioVolume
+            volume.SetMute(mute_int, None)
 
     def unmute_pid(self, pid):
         sessions = AudioUtilities.GetAllSessions()
@@ -58,19 +82,6 @@ def load_mp3_files():
     files = os.listdir(MUSIC_DIRECTORY)
     global musics
     musics.extend(files)
-
-def mute_all(mute=True):
-    """
-    Mutes or unmutes all session depending on the mute parameter.
-    """
-    sessions = AudioUtilities.GetAllSessions()
-    mute_int = 1 if mute else 0
-    for session in sessions:
-        volume = session.SimpleAudioVolume
-        volume.SetMute(mute_int, None)
-
-def unmute_all():
-    mute_all(False)
 
 def play_music(title):
     title_path = os.path.join(MUSIC_DIRECTORY, title)
@@ -102,14 +113,14 @@ def fade_up_main_track():
     Unmutes song of main track.
     """
     print "fading main track back up"
-    unmute_all()
+    jukebar_mixer.unmute_all()
 
 def fade_down_main_track():
     """
     Mutes song of main track.
     """
     print "fading main track down"
-    mute_all()
+    jukebar_mixer.mute_all()
 
 def interup():
     fade_down_main_track()
