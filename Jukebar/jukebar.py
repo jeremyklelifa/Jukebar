@@ -11,10 +11,7 @@ from time import sleep
 import psutil
 import wave
 from pygame import mixer # Load the required library
-try:
-    from pycaw.pycaw import AudioUtilities
-except ImportError:
-    from pulsectl import Pulse
+import platform
 
 
 musics = []
@@ -76,6 +73,9 @@ class JukebarMixerWindows(JukebarMixerAbstract):
     Windows mixer class implementation.
     """
 
+    def __init__(self):
+        from pycaw.pycaw import AudioUtilities
+
     def set_mute_all(self, mute=True):
         sessions = AudioUtilities.GetAllSessions()
         mute_int = 1 if mute else 0
@@ -98,6 +98,7 @@ class JukebarMixerLinux(JukebarMixerAbstract):
     """
 
     def __init__(self):
+        from pulsectl import Pulse
         self.pulse = Pulse('client1')
 
     def set_mute_all(self, mute):
@@ -113,7 +114,21 @@ class JukebarMixerLinux(JukebarMixerAbstract):
                 self.pulse.mute(sink, mute)
 
 
-jukebar_mixer = JukebarMixerLinux()
+class JukebarMixerFactory(JukebarMixerAbstract):
+    """
+    Uses the correct mixer depending on platform.
+    """
+
+    @staticmethod
+    def create():
+        if platform.system() == "Windows":
+            jukebar_mixer = JukebarMixerWindows()
+        else:
+            jukebar_mixer = JukebarMixerLinux()
+        return jukebar_mixer
+
+
+jukebar_mixer = JukebarMixerFactory.create()
 
 
 def load_mp3_files():
