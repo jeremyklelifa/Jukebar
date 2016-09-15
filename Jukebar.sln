@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PythonApplication1", "PythonApplication1\PythonApplication1.pyproj", "{5A07B65B-250D-4F53-A29C-5D678E71C797}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Jukebar", "PythonApplication1\Jukebar.pyproj", "{5A07B65B-250D-4F53-A29C-5D678E71C797}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
