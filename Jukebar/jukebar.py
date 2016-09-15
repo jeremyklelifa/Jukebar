@@ -9,7 +9,7 @@ import os
 from random import randint
 from time import sleep
 import wave
-# from pygame import mixer # Load the required library
+from pygame import mixer # Load the required library
 from pycaw.pycaw import AudioUtilities
 
 
@@ -39,10 +39,10 @@ def unmute_all():
 def play_music(title):
     title_path = os.path.join(MUSIC_DIRECTORY, title)
     print "playing title: %s" % title_path
-    sleep(3) # simulates the music is playing
-    return
+    #sleep(3) # simulates the music is playing
+    #return
     mixer.init()
-    mixer.music.load(title)
+    mixer.music.load(title_path)
     mixer.music.play()
 
 def play_next_random():
