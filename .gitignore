@@ -90,3 +90,6 @@ ENV/
 
 # Visual Studio binary
 *.suo
+
+# Interruption songs
+interrupt_songs/
