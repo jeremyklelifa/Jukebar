@@ -11,12 +11,14 @@ from time import sleep
 import psutil
 import wave
 from pygame import mixer # Load the required library
-from pycaw.pycaw import AudioUtilities
+try:
+    from pycaw.pycaw import AudioUtilities
+except ImportError:
+    from pulsectl import Pulse
 
 
 musics = []
 MUSIC_DIRECTORY = "interrupt_songs"
-jukebar_mixer = JukebarMixerWindows()
 
 
 class JukebarMixerAbstract(object):
@@ -24,13 +26,13 @@ class JukebarMixerAbstract(object):
     Base mixer class with simple mixer actions.
     """
 
-    def set_mute_all(self, mute=True):
+    def set_mute_all(self, mute):
         """
         Mutes or unmutes all session depending on the mute parameter.
         """
         raise NotImplementedError
 
-    def unmute_pid(self, pid):
+    def set_mute_pid(self, mute, pid):
         raise NotImplementedError
 
     def mute_all(self):
@@ -47,7 +49,21 @@ class JukebarMixerAbstract(object):
         mute = True
         self.set_mute_all(mute)
 
-    def unmute_current_pid(self, pid):
+    def mute_pid(self, pid):
+        """
+        Mutes the audio for the given pid.
+        """
+        mute = True
+        self.set_mute_pid(mute, pid)
+
+    def unmute_pid(self, pid):
+        """
+        Unmutes the audio for the given pid.
+        """
+        mute = False
+        self.set_mute_pid(mute, pid)
+
+    def unmute_current_pid(self):
         """
         Unmutes the current running process.
         """
@@ -57,7 +73,7 @@ class JukebarMixerAbstract(object):
 
 class JukebarMixerWindows(JukebarMixerAbstract):
     """
-    Base mixer class with simple mixer actions.
+    Windows mixer class implementation.
     """
 
     def set_mute_all(self, mute=True):
@@ -67,12 +83,37 @@ class JukebarMixerWindows(JukebarMixerAbstract):
             volume = session.SimpleAudioVolume
             volume.SetMute(mute_int, None)
 
-    def unmute_pid(self, pid):
+    def set_mute_pid(self, mute, pid):
         sessions = AudioUtilities.GetAllSessions()
+        mute_int = 1 if mute else 0
         for session in sessions:
             volume = session.SimpleAudioVolume
             if session.Process and session.Process.pid == pid:
-                volume.SetMute(0, None)
+                volume.SetMute(mute_int, None)
+
+
+class JukebarMixerLinux(JukebarMixerAbstract):
+    """
+    Linux mixer class implementation.
+    """
+
+    def __init__(self):
+        self.pulse = Pulse('client1')
+
+    def set_mute_all(self, mute):
+        sink_list = self.pulse.sink_list()
+        for sink in sink_list:
+            self.pulse.mute(sink, mute)
+
+    def set_mute_pid(self, mute, pid):
+        sink_input_list = self.pulse.sink_input_list()
+        for sink in sink_input_list:
+            proplist = sink.proplist
+            if proplist.get('application.process.id') == pid:
+                self.pulse.mute(sink, mute)
+
+
+jukebar_mixer = JukebarMixerLinux()
 
 
 def load_mp3_files():
