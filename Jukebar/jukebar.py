@@ -43,7 +43,7 @@ class JukebarMixerAbstract(object):
         """
         Unmutes all sources.
         """
-        mute = True
+        mute = False
         self.set_mute_all(mute)
 
     def mute_pid(self, pid):
