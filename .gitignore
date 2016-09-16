@@ -93,3 +93,6 @@ ENV/
 
 # Interruption songs
 interrupt_songs/
+
+# vim swap files
+*.swp

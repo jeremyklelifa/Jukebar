@@ -11,11 +11,126 @@ from time import sleep
 import psutil
 import wave
 from pygame import mixer # Load the required library
-from pycaw.pycaw import AudioUtilities
+import platform
 
 
 musics = []
 MUSIC_DIRECTORY = "interrupt_songs"
+
+
+class JukebarMixerAbstract(object):
+    """
+    Base mixer class with simple mixer actions.
+    """
+
+    def set_mute_all(self, mute):
+        """
+        Mutes or unmutes all session depending on the mute parameter.
+        """
+        raise NotImplementedError
+
+    def set_mute_pid(self, mute, pid):
+        raise NotImplementedError
+
+    def mute_all(self):
+        """
+        Mutes all sources.
+        """
+        mute = True
+        self.set_mute_all(mute)
+
+    def unmute_all(self):
+        """
+        Unmutes all sources.
+        """
+        mute = True
+        self.set_mute_all(mute)
+
+    def mute_pid(self, pid):
+        """
+        Mutes the audio for the given pid.
+        """
+        mute = True
+        self.set_mute_pid(mute, pid)
+
+    def unmute_pid(self, pid):
+        """
+        Unmutes the audio for the given pid.
+        """
+        mute = False
+        self.set_mute_pid(mute, pid)
+
+    def unmute_current_pid(self):
+        """
+        Unmutes the current running process.
+        """
+        current_pid = psutil.Process().pid
+        self.unmute_pid(current_pid)
+
+
+class JukebarMixerWindows(JukebarMixerAbstract):
+    """
+    Windows mixer class implementation.
+    """
+
+    def __init__(self):
+        from pycaw.pycaw import AudioUtilities
+        self.AudioUtilities = AudioUtilities
+
+    def set_mute_all(self, mute=True):
+        sessions = self.AudioUtilities.GetAllSessions()
+        mute_int = 1 if mute else 0
+        for session in sessions:
+            volume = session.SimpleAudioVolume
+            volume.SetMute(mute_int, None)
+
+    def set_mute_pid(self, mute, pid):
+        sessions = self.AudioUtilities.GetAllSessions()
+        mute_int = 1 if mute else 0
+        for session in sessions:
+            volume = session.SimpleAudioVolume
+            if session.Process and session.Process.pid == pid:
+                volume.SetMute(mute_int, None)
+
+
+class JukebarMixerLinux(JukebarMixerAbstract):
+    """
+    Linux mixer class implementation.
+    """
+
+    def __init__(self):
+        from pulsectl import Pulse
+        self.pulse = Pulse('client1')
+
+    def set_mute_all(self, mute):
+        sink_list = self.pulse.sink_list()
+        for sink in sink_list:
+            self.pulse.mute(sink, mute)
+
+    def set_mute_pid(self, mute, pid):
+        sink_input_list = self.pulse.sink_input_list()
+        for sink in sink_input_list:
+            proplist = sink.proplist
+            if proplist.get('application.process.id') == pid:
+                self.pulse.mute(sink, mute)
+
+
+class JukebarMixerFactory(JukebarMixerAbstract):
+    """
+    Uses the correct mixer depending on platform.
+    """
+
+    @staticmethod
+    def create():
+        if platform.system() == "Windows":
+            jukebar_mixer = JukebarMixerWindows()
+        else:
+            jukebar_mixer = JukebarMixerLinux()
+        return jukebar_mixer
+
+
+jukebar_mixer = JukebarMixerFactory.create()
+
 
 def load_mp3_files():
     """
@@ -25,30 +140,6 @@ def load_mp3_files():
     global musics
     musics.extend(files)
 
-def unmute_myself():
-    """
-    Unmute the current running process.
-    """
-    current_pid = psutil.Process().pid
-    sessions = AudioUtilities.GetAllSessions()
-    for session in sessions:
-        volume = session.SimpleAudioVolume
-        if session.Process and session.Process.pid == current_pid:
-            volume.SetMute(0, None)
-
-def mute_all(mute=True):
-    """
-    Mutes or unmutes all session depending on the mute parameter.
-    """
-    sessions = AudioUtilities.GetAllSessions()
-    mute_int = 1 if mute else 0
-    for session in sessions:
-        volume = session.SimpleAudioVolume
-        volume.SetMute(mute_int, None)
-
-def unmute_all():
-    mute_all(False)
-
 def play_music(title):
     title_path = os.path.join(MUSIC_DIRECTORY, title)
     print "playing title: %s" % title_path
@@ -57,7 +148,7 @@ def play_music(title):
     mixer.init()
     mixer.music.load(title_path)
     mixer.music.play()
-    unmute_myself()
+    jukebar_mixer.unmute_current_pid()
     while mixer.music.get_busy():
         sleep(1)
 
@@ -79,14 +170,14 @@ def fade_up_main_track():
     Unmutes song of main track.
     """
     print "fading main track back up"
-    unmute_all()
+    jukebar_mixer.unmute_all()
 
 def fade_down_main_track():
     """
     Mutes song of main track.
     """
     print "fading main track down"
-    mute_all()
+    jukebar_mixer.mute_all()
 
 def interup():
     fade_down_main_track()

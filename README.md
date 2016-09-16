@@ -7,6 +7,11 @@ Install requirements:
 
 	pip install -r requirements.txt
 
-## Development requirements
+## Windows requirements
 	choco install android-sdk
 	choco install adb
+
+## Linux requirements
+Tested under Ubuntu Xenial 16.04.
+
+    apt install mesa-common-dev libgl1-mesa-dev libsmpeg0
