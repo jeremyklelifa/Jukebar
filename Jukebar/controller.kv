@@ -76,10 +76,12 @@
 
 		Button:
 			text: u'Close'
+			# TODO: stop running threads
 			on_press: app.stop()
 
 
 <MainScreen@Screen>:
+	toggle_juke_property: toggle_juke_id
 
     FloatLayout:
 
@@ -98,11 +100,13 @@
 		AnchorLayout:
 			anchor_x: 'center'
 			anchor_y: 'center'
-			Button:
-				text: 'Start juke'
+			ToggleButton:
+				id: toggle_juke_id
+				text: 'Start Juke'
 				size: 100, 100
 				size_hint: None, None
-				on_press: root.start_juke_action()
+				on_state:
+					root.toggle_juke_action()
 
 				
 <Controller>:

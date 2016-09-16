@@ -11,10 +11,15 @@ kivy.require('1.9.1')
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
 from kivy.app import App
-from kivy.properties import ObjectProperty, StringProperty
-from jukebar import Jukebar
+from kivy.properties import ObjectProperty
+from jukebar import JukebarThread
 
 class MainScreen(Screen):
+    toggle_juke_property = ObjectProperty()
+    def __init__(self, **kwargs):
+        super(MainScreen, self).__init__(**kwargs)
+        self.jukebar_thread = None
+
     def on_settings_action(self):
         print "open settings"
 
@@ -39,11 +44,28 @@ class MainScreen(Screen):
         return timer_max_value
 
     def start_juke_action(self):
-        
         min_sleep_time = self.get_timer_min_value()
         max_sleep_time = self.get_timer_max_value()
-        jukebar = Jukebar()
-        jukebar.run(min_sleep_time, max_sleep_time)
+        self.jukebar_thread = JukebarThread(
+            min_sleep_time=min_sleep_time,
+            max_sleep_time=max_sleep_time,
+        )
+        self.jukebar_thread.start()
+
+    def stop_juke_action(self):
+        if self.jukebar_thread is None:
+            return
+        self.jukebar_thread.stop()
+        self.jukebar_thread.join()
+
+    def toggle_juke_action(self):
+        toggle_juke_property = self.toggle_juke_property
+        if toggle_juke_property.state == 'down':
+            self.start_juke_action()
+            toggle_juke_property.text = "Stop Juke"
+        else:
+            self.stop_juke_action()
+            toggle_juke_property.text = "Start Juke"
 
 class SettingScreen(Screen):
     timer_min_property = ObjectProperty()
