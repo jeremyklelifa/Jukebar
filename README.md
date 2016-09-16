@@ -14,4 +14,4 @@ Install requirements:
 ## Linux requirements
 Tested under Ubuntu Xenial 16.04.
 
-    apt install mesa-common-dev libgl1-mesa-dev
+    apt install mesa-common-dev libgl1-mesa-dev libsmpeg0
