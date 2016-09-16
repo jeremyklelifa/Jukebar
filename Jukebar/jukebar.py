@@ -3,6 +3,7 @@ The Jukebar library.
 """
 
 import os
+import threading
 from random import randint
 from time import sleep
 import psutil
@@ -131,6 +132,13 @@ jukebar_mixer = JukebarMixerFactory.create()
 
 class Jukebar(object):
 
+    def __init__(self, stop_event=None):
+        """
+        Args:
+            stop_event (threading.Event): Used to stop the worker.
+        """
+        self._stop_event = stop_event
+
     def load_mp3_files(self):
         """
         Creates the mp3 list from what is found in the directory.
@@ -147,7 +155,10 @@ class Jukebar(object):
         mixer.music.play()
         jukebar_mixer.unmute_current_pid()
         while mixer.music.get_busy():
-            sleep(1)
+            if self.should_stop():
+                mixer.music.stop()
+            else:
+                sleep(1)
 
     def play_next_random(self):
         title_random_index = randint(0, len(musics)-1)
@@ -181,16 +192,50 @@ class Jukebar(object):
         self.play_next()
         self.fade_up_main_track()
 
+    def should_stop(self):
+        if self._stop_event is None:
+            return False
+        return self._stop_event.is_set()
+
     def run(self, min_sleep_time=1, max_sleep_time=10):
         """
         Starts the application for testing
         """
+        print "Jukebar.run() begin"
         self.load_mp3_files()
-        count = 3
         print "min_sleep_time:", min_sleep_time
         print "max_sleep_time:", max_sleep_time
-        while count > 0:
+        while not self.should_stop():
             random_time = randint(min_sleep_time, max_sleep_time)
             sleep(random_time)
             self.interup()
-            count -= 1
+        print "Jukebar.run() end"
+
+class JukebarThread(threading.Thread):
+
+    def __init__(self, min_sleep_time, max_sleep_time):
+        super(JukebarThread, self).__init__()
+        self._stop_event = threading.Event()
+        self._min_sleep_time = min_sleep_time
+        self._max_sleep_time = max_sleep_time
+        self.jukebar = Jukebar(stop_event=self._stop_event)
+
+    def run(self):
+        print "JukebarThread.run() begin"
+        self.jukebar.run(
+                min_sleep_time=self._min_sleep_time,
+                max_sleep_time=self._max_sleep_time)
+        print "JukebarThread.run() end"
+
+    def stop(self):
+        """
+        Stops the thread.
+        """
+        print "JukebarThread.stop()"
+        self._stop_event.set()
+
+    def stop_requested(self):
+        """
+        Returns True if the thread was requested to stop.
+        """
+        return self._stop_event.isSet()
