@@ -2,6 +2,8 @@
 
 
 <SettingScreen@Screen>:
+	timer_min_property: timer_min_id
+	timer_max_property: timer_max_id
 	BoxLayout:
         orientation: 'vertical'
 
@@ -23,10 +25,18 @@
 				root.manager.current = 'Modify musics'
 				root.manager.transition.direction = 'right'
 
-		Label:
-			markup: True
-			text: '[size=30][b][color=FFFFFF]Timer:[/color][/b][/size]'
-
+		BoxLayout:
+			orientation: 'horizontal'
+			spacing: 10
+			Label:
+				markup: True
+				text: '[size=30][b][color=FFFFFF]Timer:[/color][/b][/size]'
+			TextInput:
+				id: timer_min_id
+				text: '1'
+			TextInput:
+				id: timer_max_id
+				text: '10'
 
 <AboutScreen@Screen>:
 	BoxLayout:
@@ -100,17 +110,17 @@
     ScreenManager:
 
         MainScreen:
-            id: main_screen
+            id: main_screen_id
             name: 'main'
 
         MenuScreen:
-            id: menu_screen
+            id: menu_screen_id
             name: 'menu'
 
         AboutScreen:
-            id: about_screen
+            id: about_screen_id
             name: 'about'
 
 		SettingScreen:
-            id: setting_screen
+            id: setting_screen_id
             name: 'setting'

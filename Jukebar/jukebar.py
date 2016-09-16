@@ -185,15 +185,16 @@ def interup():
     play_next()
     fade_up_main_track()
 
-def run_jukebar():
+def run_jukebar(min_sleep_time=1, max_sleep_time=10):
     """ 
     Starts the application for testing
     """
     load_mp3_files()
-    MAX_SLEEP_TIME = 10
     count = 3
+    print "min_sleep_time:", min_sleep_time
+    print "max_sleep_time:", max_sleep_time
     while count > 0:
-        random_time = randint(1, MAX_SLEEP_TIME)
+        random_time = randint(min_sleep_time, max_sleep_time)
         sleep(random_time)
         interup()
         count -= 1
