@@ -1,6 +1,33 @@
 #:kivy 1.0
 
 
+<SettingScreen@Screen>:
+	BoxLayout:
+        orientation: 'vertical'
+
+		Button:
+			text: u'Back'
+			on_press:
+				root.manager.current = 'menu'
+				root.manager.transition.direction = 'left'
+
+		Button:
+			text: u'Add musics'
+			on_press:
+				root.manager.current = 'Add musics'
+				root.manager.transition.direction = 'right'
+
+		Button:
+			text: u'Modify musics'
+			on_press:
+				root.manager.current = 'Modify musics'
+				root.manager.transition.direction = 'right'
+
+		Label:
+			markup: True
+			text: '[size=30][b][color=FFFFFF]Timer:[/color][/b][/size]'
+
+
 <AboutScreen@Screen>:
 	BoxLayout:
         orientation: 'vertical'
@@ -27,14 +54,20 @@
 
 		Button:
 			text: u'Settings'
+			on_press:
+				root.manager.current = 'setting'
+				root.manager.transition.direction = 'right'
+
 		Button:
 			text: u'About'
 			on_press:
 				root.manager.current = 'about'
 				root.manager.transition.direction = 'right'
+
 		Button:
 			text: u'Close'
 			on_press: app.stop()
+
 
 <MainScreen@Screen>:
 
@@ -77,3 +110,7 @@
         AboutScreen:
             id: about_screen
             name: 'about'
+
+		SettingScreen:
+            id: setting_screen
+            name: 'setting'
