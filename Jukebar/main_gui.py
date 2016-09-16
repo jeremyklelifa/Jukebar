@@ -12,7 +12,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
 from kivy.app import App
 from kivy.properties import ObjectProperty, StringProperty
-from jukebar import run_jukebar
+from jukebar import Jukebar
 
 class MainScreen(Screen):
     def on_settings_action(self):
@@ -41,10 +41,9 @@ class MainScreen(Screen):
     def start_juke_action(self):
         
         min_sleep_time = self.get_timer_min_value()
-        max_sleep_time = self.get_timer_max_value() #10 # TODO: hardcoded
-        print "start_juke_action called!"
-        run_jukebar(min_sleep_time, max_sleep_time)
-        print "start_juke_action end"
+        max_sleep_time = self.get_timer_max_value()
+        jukebar = Jukebar()
+        jukebar.run(min_sleep_time, max_sleep_time)
 
 class SettingScreen(Screen):
     timer_min_property = ObjectProperty()
