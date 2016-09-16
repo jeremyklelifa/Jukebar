@@ -75,16 +75,17 @@ class JukebarMixerWindows(JukebarMixerAbstract):
 
     def __init__(self):
         from pycaw.pycaw import AudioUtilities
+        self.AudioUtilities = AudioUtilities
 
     def set_mute_all(self, mute=True):
-        sessions = AudioUtilities.GetAllSessions()
+        sessions = self.AudioUtilities.GetAllSessions()
         mute_int = 1 if mute else 0
         for session in sessions:
             volume = session.SimpleAudioVolume
             volume.SetMute(mute_int, None)
 
     def set_mute_pid(self, mute, pid):
-        sessions = AudioUtilities.GetAllSessions()
+        sessions = self.AudioUtilities.GetAllSessions()
         mute_int = 1 if mute else 0
         for session in sessions:
             volume = session.SimpleAudioVolume
