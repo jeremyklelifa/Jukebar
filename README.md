@@ -3,15 +3,14 @@
 This is just my hello world project.
 
 ## Install
-Install requirements:
 
-	pip install -r requirements.txt
+### Windows
+Tested under Windows 7 & Windows 10.
 
-## Windows requirements
-	choco install android-sdk
-	choco install adb
+	pip install -r requirements/windows.txt
 
-## Linux requirements
+### Linux
 Tested under Ubuntu Xenial 16.04.
 
     apt install mesa-common-dev libgl1-mesa-dev libsmpeg0
+	pip install -r requirements/linux.txt
