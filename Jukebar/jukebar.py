@@ -43,7 +43,7 @@ class JukebarMixerAbstract(object):
         """
         Unmutes all sources.
         """
-        mute = True
+        mute = False
         self.set_mute_all(mute)
 
     def mute_pid(self, pid):
@@ -103,15 +103,16 @@ class JukebarMixerLinux(JukebarMixerAbstract):
         self.pulse = Pulse('client1')
 
     def set_mute_all(self, mute):
-        sink_list = self.pulse.sink_list()
-        for sink in sink_list:
+        sink_input_list = self.pulse.sink_input_list()
+        for sink in sink_input_list:
             self.pulse.mute(sink, mute)
 
     def set_mute_pid(self, mute, pid):
         sink_input_list = self.pulse.sink_input_list()
         for sink in sink_input_list:
             proplist = sink.proplist
-            if proplist.get('application.process.id') == pid:
+            # for some reason sometimes the value is a string
+            if proplist.get('application.process.id') in [pid, str(pid)]:
                 self.pulse.mute(sink, mute)
 
 
