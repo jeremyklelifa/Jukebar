@@ -1,0 +1,7 @@
+Cython==0.21.2
+enum34==1.1.5
+Kivy==1.9.1
+Kivy-Garden==0.1.4
+psutil==4.1.0
+pygame==1.9.2b8
+Pygments==2.1.3

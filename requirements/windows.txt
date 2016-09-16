@@ -1,0 +1,7 @@
+-r common.txt
+comtypes==1.1.2
+# pycaw==20160508
+https://github.com/AndreMiras/pycaw/archive/v20160508.zip
+kivy.deps.glew==0.1.4
+kivy.deps.sdl2==0.1.12
+
