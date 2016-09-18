@@ -6,7 +6,6 @@ import os
 import threading
 from random import randint
 from time import sleep
-import psutil
 from kivy.utils import platform
 from kivy.core.audio import SoundLoader
 
@@ -61,6 +60,7 @@ class JukebarMixerAbstract(object):
         """
         Unmutes the current running process.
         """
+        import psutil
         current_pid = psutil.Process().pid
         self.unmute_pid(current_pid)
 
@@ -113,6 +113,37 @@ class JukebarMixerLinux(JukebarMixerAbstract):
                 self.pulse.mute(sink, mute)
 
 
+class JukebarMixerAndroid(JukebarMixerAbstract):
+    """
+    Android mixer class implementation.
+    """
+
+    def __init__(self):
+        from jnius import autoclass, cast
+        # MediaPlayer = autoclass('android.media.MediaPlayer')
+        PythonActivity = autoclass('org.kivy.android.PythonActivity')
+        # AudioManager amanager=(AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        Context = autoclass('android.content.Context')
+        self.audio_manager = cast(
+            'android.media.AudioManager',
+            PythonActivity.mActivity.getSystemService(Context.AUDIO_SERVICE))
+
+    def set_mute_all(self, mute):
+        """
+        Actually only (un)mutes the music "channel", since it will be
+        the background music.
+        On Android there're different "channels":
+            - music
+            - notification
+            - alarm
+            - ring
+            - system
+        """
+        from jnius import autoclass
+        AudioManager = autoclass('android.media.AudioManager')
+        self.audio_manager.setStreamMute(AudioManager.STREAM_MUSIC, mute);
+
+
 class JukebarMixerFactory(JukebarMixerAbstract):
     """
     Uses the correct mixer depending on platform.
@@ -125,7 +156,7 @@ class JukebarMixerFactory(JukebarMixerAbstract):
         elif platform == "linux":
             jukebar_mixer = JukebarMixerLinux()
         elif platform == "android":
-            jukebar_mixer = JukebarMixerAbstract()
+            jukebar_mixer = JukebarMixerAndroid()
         return jukebar_mixer
 
 
