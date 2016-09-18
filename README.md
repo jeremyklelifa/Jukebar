@@ -10,10 +10,14 @@ Tested under Windows 7 & Windows 10.
 	pip install -r requirements/windows.txt
 
 ### Linux
-Tested under Ubuntu Xenial 16.04.
+#### Ubuntu Xenial 16.04
 
-    apt install mesa-common-dev libgl1-mesa-dev libsmpeg0
+    apt install mesa-common-dev libgl1-mesa-dev libsmpeg0 python-gst-1.0
 	pip install -r requirements/linux.txt
+
+#### Gentoo
+
+    emerge media-libs/mesa media-libs/smpeg dev-python/gst-python media-plugins/gst-plugins-meta
 
 ### Android
 Tested under Android 6.0.
