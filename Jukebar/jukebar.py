@@ -7,8 +7,8 @@ import threading
 from random import randint
 from time import sleep
 import psutil
-from pygame import mixer
 import platform
+from kivy.core.audio import SoundLoader
 
 
 musics = []
@@ -150,13 +150,11 @@ class Jukebar(object):
     def play_music(self, title):
         title_path = os.path.join(MUSIC_DIRECTORY, title)
         print "playing title: %s" % title_path
-        mixer.init()
-        mixer.music.load(title_path)
-        mixer.music.play()
-        jukebar_mixer.unmute_current_pid()
-        while mixer.music.get_busy():
+        sound = SoundLoader.load(title_path)
+        sound.play()
+        while sound.state == 'play':
             if self.should_stop():
-                mixer.music.stop()
+                sound.stop()
             else:
                 sleep(1)
 
