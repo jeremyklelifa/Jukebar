@@ -7,7 +7,7 @@ import threading
 from random import randint
 from time import sleep
 import psutil
-import platform
+from kivy.utils import platform
 from kivy.core.audio import SoundLoader
 
 
@@ -120,10 +120,12 @@ class JukebarMixerFactory(JukebarMixerAbstract):
 
     @staticmethod
     def create():
-        if platform.system() == "Windows":
+        if platform == "win":
             jukebar_mixer = JukebarMixerWindows()
-        else:
+        elif platform == "linux":
             jukebar_mixer = JukebarMixerLinux()
+        elif platform == "android":
+            jukebar_mixer = JukebarMixerAbstract()
         return jukebar_mixer
 
 
