@@ -6,7 +6,7 @@
     <ProjectGuid>5a07b65b-250d-4f53-a29c-5d678e71c797</ProjectGuid>
     <ProjectHome>
     </ProjectHome>
-    <StartupFile>main_gui.py</StartupFile>
+    <StartupFile>main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -29,29 +29,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="main_gui.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="examples\__init__.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="jukebar.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="main.py" />
     <Compile Include="main_console.py" />
-    <Compile Include="tests_libs.py" />
-    <Compile Include="examples\audio_endpoint_volume_example.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="examples\volume_by_process_example.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="examples\simple_audio_volume_example.py">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="examples\" />
     <Folder Include="mockups\" />
   </ItemGroup>
   <ItemGroup>
@@ -60,7 +44,6 @@
     <Content Include="mockups\settings_screen.json" />
     <Content Include="mockups\main_screen_menu.json" />
     <Content Include="mockups\main_screen.json" />
-    <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
