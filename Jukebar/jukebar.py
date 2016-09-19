@@ -92,7 +92,7 @@ class JukebarMixerWindows(JukebarMixerAbstract):
             volume.SetMute(mute_int, None)
 
     def set_mute_pid(self, mute, pid):
-        sessions = self.get_all_sessions
+        sessions = self.get_all_sessions()
         mute_int = 1 if mute else 0
         for session in sessions:
             volume = session.SimpleAudioVolume
