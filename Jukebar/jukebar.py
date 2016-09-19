@@ -194,6 +194,9 @@ class Jukebar(object):
         title_path = os.path.join(MUSIC_DIRECTORY, title)
         print "playing title: %s" % title_path
         sound = SoundLoader.load(title_path)
+        # explicitly unmuting seems required on Windows
+        if platform == "win":
+            jukebar_mixer.unmute_current_pid()
         sound.play()
         while sound.state == 'play':
             if self.should_stop():
