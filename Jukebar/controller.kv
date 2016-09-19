@@ -90,8 +90,9 @@
 			anchor_y: 'top'
 			Button:
 				text: 'Settings'
-				size: 100, 100
+				size: self.texture_size
 				size_hint: None, None
+				padding: 50, 50
 				# on_press: root.on_settings_action()
 				on_press:
 					root.manager.current = 'menu'
@@ -103,8 +104,9 @@
 			ToggleButton:
 				id: toggle_juke_id
 				text: 'Start Juke'
-				size: 100, 100
+				size: self.texture_size
 				size_hint: None, None
+				padding: 50, 50
 				on_state:
 					root.toggle_juke_action()
 
