@@ -2,16 +2,33 @@
 
 This is just my hello world project.
 
-## Install
-Install requirements:
+## Install dependencies
 
-	pip install -r requirements.txt
+### Windows
+Tested under Windows 7 & Windows 10.
 
-## Windows requirements
-	choco install android-sdk
-	choco install adb
+	pip install -r requirements/windows.txt
 
-## Linux requirements
-Tested under Ubuntu Xenial 16.04.
+### Linux
+#### Ubuntu Xenial 16.04
 
-    apt install mesa-common-dev libgl1-mesa-dev libsmpeg0
+    apt install mesa-common-dev libgl1-mesa-dev libsmpeg0 python-gst-1.0
+	pip install -r requirements/linux.txt
+
+#### Gentoo
+
+    emerge media-libs/mesa media-libs/smpeg dev-python/gst-python media-plugins/gst-plugins-meta
+
+### Android
+Tested under Android 6.0.
+
+    pip install -r requirements/android.txt
+
+## Run or deploy
+On Windows and Linux, go to the Jukebar/ directory and run:
+
+    python Jukebar/main.py
+
+To deploy on Android, go to the Jukebar/ directory and run:
+
+    buildozer android_new debug deploy run
