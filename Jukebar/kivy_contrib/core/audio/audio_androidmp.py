@@ -6,8 +6,22 @@ using pyjnius.
 https://developer.android.com/reference/android/media/MediaPlayer.html
 '''
 
-from jnius import autoclass
+from jnius import autoclass, PythonJavaClass, java_method
 from kivy.core.audio import Sound, SoundLoader
+
+
+class OnCompletionListener(PythonJavaClass):
+    __javainterfaces__ = ('android.media.MediaPlayer$OnCompletionListener',)
+
+    def __init__(self, sound):
+        super(OnCompletionListener, self).__init__()
+        self.sound = sound
+
+    @java_method('(Landroid/media/MediaPlayer;)V')
+    def onCompletion(self, mp):
+        print 'onCompletion() called', mp
+        # makes sure the sound.state gets updated
+        self.sound.stop()
 
 
 class SoundAndroidMp(Sound):
@@ -25,6 +39,8 @@ class SoundAndroidMp(Sound):
     def __init__(self, **kwargs):
         MediaPlayer = autoclass('android.media.MediaPlayer')
         self._media_player = MediaPlayer()
+        self.completion_listener = OnCompletionListener(self)
+        self._media_player.setOnCompletionListener(self.completion_listener)
         super(SoundAndroidMp, self).__init__(**kwargs)
 
     def play(self):
