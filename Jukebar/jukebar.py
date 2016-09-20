@@ -6,12 +6,23 @@ import os
 import threading
 from random import randint
 from time import sleep
+from kivy import kivy_options
+from kivy.core import core_register_libs
 from kivy.utils import platform
+# from kivy.config import Config
 from kivy.core.audio import SoundLoader
 
 
 musics = []
 MUSIC_DIRECTORY = "interrupt_songs"
+# Config.set('kivy', 'log_level', 'trace')
+
+# loads the audio_androidmp implementation, it supports a lot of media formats
+if platform == "android":
+    kivy_options['audio'] += ('androidmp',)
+    additional_audio_libs = [('androidmp', 'audio_androidmp')]
+    base = 'kivy_contrib.core'
+    libs_loaded = core_register_libs('audio', additional_audio_libs, base)
 
 
 class JukebarMixerAbstract(object):
@@ -130,9 +141,7 @@ class JukebarMixerAndroid(JukebarMixerAbstract):
 
     def __init__(self):
         from jnius import autoclass, cast
-        # MediaPlayer = autoclass('android.media.MediaPlayer')
         PythonActivity = autoclass('org.kivy.android.PythonActivity')
-        # AudioManager amanager=(AudioManager)getSystemService(Context.AUDIO_SERVICE);
         Context = autoclass('android.content.Context')
         self.audio_manager = cast(
             'android.media.AudioManager',
@@ -151,7 +160,7 @@ class JukebarMixerAndroid(JukebarMixerAbstract):
         """
         from jnius import autoclass
         AudioManager = autoclass('android.media.AudioManager')
-        self.audio_manager.setStreamMute(AudioManager.STREAM_MUSIC, mute);
+        self.audio_manager.setStreamMute(AudioManager.STREAM_MUSIC, mute)
 
 
 class JukebarMixerFactory(JukebarMixerAbstract):
@@ -254,6 +263,7 @@ class Jukebar(object):
             sleep(random_time)
             self.interup()
         print "Jukebar.run() end"
+
 
 class JukebarThread(threading.Thread):
 
