@@ -7,7 +7,6 @@ https://developer.android.com/reference/android/media/MediaPlayer.html
 '''
 
 from jnius import autoclass
-from kivy.utils import platform
 from kivy.core.audio import Sound, SoundLoader
 
 
@@ -15,16 +14,17 @@ class SoundAndroidMp(Sound):
 
     @staticmethod
     def extensions():
-	"""
-	https://developer.android.com/guide/appendix/media-formats.html
-	"""
+        """
+        https://developer.android.com/guide/appendix/media-formats.html
+        """
         return (
-	    '3gp', 'mp4', 'm4a', 'aac', 'flac', 'mp3', 'mid', 'xmf', 'mxmf',
-	    'rtttl', 'rtx', 'ota', 'imy', 'ogg', 'wav', 'mkv', 'webm')
+                '3gp', 'mp4', 'm4a', 'aac', 'flac', 'mp3', 'mid', 'xmf',
+                'mxmf', 'rtttl', 'rtx', 'ota', 'imy', 'ogg', 'wav', 'mkv',
+                'webm')
 
     def __init__(self, **kwargs):
         MediaPlayer = autoclass('android.media.MediaPlayer')
-	self._media_player = MediaPlayer()
+        self._media_player = MediaPlayer()
         super(SoundAndroidMp, self).__init__(**kwargs)
 
     def play(self):
