@@ -140,14 +140,40 @@ class JukebarMixerAndroid(JukebarMixerAbstract):
     """
 
     def __init__(self):
-        from jnius import autoclass, cast
+        from jnius import autoclass
         PythonActivity = autoclass('org.kivy.android.PythonActivity')
-        Context = autoclass('android.content.Context')
-        self.audio_manager = cast(
-            'android.media.AudioManager',
-            PythonActivity.mActivity.getSystemService(Context.AUDIO_SERVICE))
+        self.activity = PythonActivity.mActivity
 
-    def set_mute_all(self, mute):
+    def _music_service_command(self, command):
+        """
+        Broadcasts musicservicecommand.
+        Gives 2 tries:
+            1) via com.android.music.musicservicecommand
+            2) via com.sec.android.app.music.musicservicecommand
+        """
+        from jnius import autoclass
+        Intent = autoclass('android.content.Intent')
+        # 1) try via com.android.music.musicservicecommand
+        intent = Intent(
+                "com.android.music.musicservicecommand." + command)
+        intent.putExtra("command", command)
+        self.activity.sendBroadcast(intent)
+        # 2) try via com.sec.android.app.music.musicservicecommand
+        intent = Intent(
+                "com.sec.android.app.music.musicservicecommand." + command)
+        intent.putExtra("command", command)
+        self.activity.sendBroadcast(intent)
+
+    def _pause_music_player(self):
+        """
+        Pauses the default music player.
+        """
+        self._music_service_command("pause")
+
+    def _play_music_player(self):
+        self._music_service_command("play")
+
+    def _set_mute_music_channel(self, mute):
         """
         Actually only (un)mutes the music "channel", since it will be
         the background music.
@@ -158,9 +184,22 @@ class JukebarMixerAndroid(JukebarMixerAbstract):
             - ring
             - system
         """
-        from jnius import autoclass
+        from jnius import autoclass, cast
+        Context = autoclass('android.content.Context')
         AudioManager = autoclass('android.media.AudioManager')
+        self.audio_manager = cast(
+            'android.media.AudioManager',
+            self.activity.getSystemService(Context.AUDIO_SERVICE))
         self.audio_manager.setStreamMute(AudioManager.STREAM_MUSIC, mute)
+
+    def set_mute_all(self, mute):
+        """
+        Play/Pause the default music player rather than unmute/mute.
+        """
+        if mute:
+            self._pause_music_player()
+        else:
+            self._play_music_player()
 
 
 class JukebarMixerFactory(JukebarMixerAbstract):
