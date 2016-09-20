@@ -54,7 +54,7 @@ class SoundAndroidMp(Sound):
         if self._media_player is None:
             return
         msec = position * 1000
-        self._media_player.seekTo()
+        self._media_player.seekTo(msec)
 
     def get_pos(self):
         if self._media_player is None:
