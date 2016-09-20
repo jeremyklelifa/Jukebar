@@ -73,10 +73,9 @@ class SoundAndroidMp(Sound):
     def _get_length(self):
         if self._media_player is None:
             return super(SoundAndroidMp, self)._get_length()
-        duration_msec = self._media_player.getDuration(left_volume, right_volume)
+        duration_msec = self._media_player.getDuration()
         duration_sec = duration_msec / 1000.0
         return duration_sec
 
 
-print "SoundLoader.register(SoundAndroidMp)"
 SoundLoader.register(SoundAndroidMp)
