@@ -9,20 +9,42 @@ from time import sleep
 from kivy import kivy_options
 from kivy.core import core_register_libs
 from kivy.utils import platform
-# from kivy.config import Config
+from kivy.config import Config
 from kivy.core.audio import SoundLoader
 
 
 musics = []
 MUSIC_DIRECTORY = "interrupt_songs"
-# Config.set('kivy', 'log_level', 'trace')
+Config.set('kivy', 'log_level', 'trace')
 
-# loads the audio_androidmp implementation, it supports a lot of media formats
-if platform == "android":
+
+
+def load_audio_androidmp():
+    """
+    Loads the audio_androidmp implementation,
+    it supports a lot of media formats.
+    """
     kivy_options['audio'] += ('androidmp',)
     additional_audio_libs = [('androidmp', 'audio_androidmp')]
     base = 'kivy_contrib.core'
     libs_loaded = core_register_libs('audio', additional_audio_libs, base)
+
+def load_jnius_nih():
+    """
+    Creates org.jnius.NativeInvocationHandler once in the main thread
+    to wordaround the error:
+    JavaException: Class not found 'org/jnius/NativeInvocationHandler'
+    see:
+      - https://github.com/kivy/pyjnius/issues/137
+      - https://github.com/kivy/pyjnius/issues/223
+      - http://stackoverflow.com/a/27943091/185510
+    """
+    from jnius import autoclass
+    autoclass('org.jnius.NativeInvocationHandler')
+
+if platform == "android":
+    load_audio_androidmp()
+    load_jnius_nih()
 
 
 class JukebarMixerAbstract(object):
