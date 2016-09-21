@@ -9,14 +9,13 @@ from time import sleep
 from kivy import kivy_options
 from kivy.core import core_register_libs
 from kivy.utils import platform
-from kivy.config import Config
+# from kivy.config import Config
 from kivy.core.audio import SoundLoader
 
 
 musics = []
 MUSIC_DIRECTORY = "interrupt_songs"
-Config.set('kivy', 'log_level', 'trace')
-
+# Config.set('kivy', 'log_level', 'trace')
 
 
 def load_audio_androidmp():
@@ -27,7 +26,8 @@ def load_audio_androidmp():
     kivy_options['audio'] += ('androidmp',)
     additional_audio_libs = [('androidmp', 'audio_androidmp')]
     base = 'kivy_contrib.core'
-    libs_loaded = core_register_libs('audio', additional_audio_libs, base)
+    core_register_libs('audio', additional_audio_libs, base)
+
 
 def load_jnius_nih():
     """
