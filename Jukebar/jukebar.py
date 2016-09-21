@@ -282,23 +282,16 @@ class Jukebar(object):
     def play_next(self):
         self.play_next_random()
 
-    """
-    def start_rand_timer():
-        t = Timer(1.0, stop_current_and_play_next)
-    """
-
     def fade_up_main_track(self):
         """
         Unmutes song of main track.
         """
-        print "fading main track back up"
         jukebar_mixer.unmute_all()
 
     def fade_down_main_track(self):
         """
         Mutes song of main track.
         """
-        print "fading main track down"
         jukebar_mixer.mute_all()
 
     def interup(self):
@@ -315,15 +308,11 @@ class Jukebar(object):
         """
         Starts the application for testing
         """
-        print "Jukebar.run() begin"
         self.load_mp3_files()
-        print "min_sleep_time:", min_sleep_time
-        print "max_sleep_time:", max_sleep_time
         while not self.should_stop():
             random_time = randint(min_sleep_time, max_sleep_time)
             sleep(random_time)
             self.interup()
-        print "Jukebar.run() end"
 
 
 class JukebarThread(threading.Thread):
@@ -336,17 +325,14 @@ class JukebarThread(threading.Thread):
         self.jukebar = Jukebar(stop_event=self._stop_event)
 
     def run(self):
-        print "JukebarThread.run() begin"
         self.jukebar.run(
                 min_sleep_time=self._min_sleep_time,
                 max_sleep_time=self._max_sleep_time)
-        print "JukebarThread.run() end"
 
     def stop(self):
         """
         Stops the thread.
         """
-        print "JukebarThread.stop()"
         self._stop_event.set()
 
     def stop_requested(self):
