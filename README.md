@@ -1,6 +1,6 @@
-# README
+# Jukebar
 
-This is just my hello world project.
+Jukebox for the drinkers.
 
 ## Install dependencies
 
