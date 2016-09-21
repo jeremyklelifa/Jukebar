@@ -32,10 +32,24 @@
     <Compile Include="jukebar.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="kivy_contrib\core\audio\audio_androidmp.py" />
+    <Compile Include="kivy_contrib\core\audio\__init__.py" />
+    <Compile Include="kivy_contrib\core\__init__.py" />
+    <Compile Include="kivy_contrib\__init__.py" />
     <Compile Include="main.py" />
     <Compile Include="main_console.py" />
+    <Compile Include="mixers\jukebar_mixer_abstract.py" />
+    <Compile Include="mixers\jukebar_mixer_android.py" />
+    <Compile Include="mixers\jukebar_mixer_factory.py" />
+    <Compile Include="mixers\jukebar_mixer_linux.py" />
+    <Compile Include="mixers\jukebar_mixer_windows.py" />
+    <Compile Include="mixers\__init__.py" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="kivy_contrib\" />
+    <Folder Include="kivy_contrib\core\" />
+    <Folder Include="kivy_contrib\core\audio\" />
+    <Folder Include="mixers\" />
     <Folder Include="mockups\" />
   </ItemGroup>
   <ItemGroup>
