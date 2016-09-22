@@ -1,6 +1,25 @@
 #:kivy 1.0
 
 
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
+
 <SettingScreen@Screen>:
     timer_min_property: timer_min_id
     timer_max_property: timer_max_id
@@ -15,9 +34,7 @@
 
         Button:
             text: u'Add musics'
-            on_press:
-                root.manager.current = 'Add musics'
-                root.manager.transition.direction = 'right'
+            on_press: root.show_load()
 
         Button:
             text: u'Modify musics'
