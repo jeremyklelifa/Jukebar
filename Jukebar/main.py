@@ -5,6 +5,7 @@ Save.
 -m screen:onex,portrait,scale=.75
 """
 
+import os
 import kivy
 kivy.require('1.9.1')
 
@@ -86,9 +87,8 @@ class SettingScreen(Screen):
         self._popup.dismiss()
 
     def load(self, path, filename):
-        with open(os.path.join(path, filename[0])) as stream:
-            self.text_input.text = stream.read()
-
+        full_path = os.path.join(path, filename[0])
+        print "filename:", filename
         self.dismiss_popup()
 
 class Controller(FloatLayout):
