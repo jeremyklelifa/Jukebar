@@ -2,117 +2,117 @@
 
 
 <SettingScreen@Screen>:
-	timer_min_property: timer_min_id
-	timer_max_property: timer_max_id
-	BoxLayout:
+    timer_min_property: timer_min_id
+    timer_max_property: timer_max_id
+    BoxLayout:
         orientation: 'vertical'
 
-		Button:
-			text: u'Back'
-			on_press:
-				root.manager.current = 'menu'
-				root.manager.transition.direction = 'left'
+        Button:
+            text: u'Back'
+            on_press:
+                root.manager.current = 'menu'
+                root.manager.transition.direction = 'left'
 
-		Button:
-			text: u'Add musics'
-			on_press:
-				root.manager.current = 'Add musics'
-				root.manager.transition.direction = 'right'
+        Button:
+            text: u'Add musics'
+            on_press:
+                root.manager.current = 'Add musics'
+                root.manager.transition.direction = 'right'
 
-		Button:
-			text: u'Modify musics'
-			on_press:
-				root.manager.current = 'Modify musics'
-				root.manager.transition.direction = 'right'
+        Button:
+            text: u'Modify musics'
+            on_press:
+                root.manager.current = 'Modify musics'
+                root.manager.transition.direction = 'right'
 
-		BoxLayout:
-			orientation: 'horizontal'
-			spacing: 10
-			Label:
-				markup: True
-				text: '[size=30][b][color=FFFFFF]Timer:[/color][/b][/size]'
-			TextInput:
-				id: timer_min_id
-				text: '1'
-			TextInput:
-				id: timer_max_id
-				text: '10'
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 10
+            Label:
+                markup: True
+                text: '[size=30][b][color=FFFFFF]Timer:[/color][/b][/size]'
+            TextInput:
+                id: timer_min_id
+                text: '1'
+            TextInput:
+                id: timer_max_id
+                text: '10'
 
 <AboutScreen@Screen>:
-	BoxLayout:
+    BoxLayout:
         orientation: 'vertical'
 
-		Button:
-			text: u'Back'
-			on_press:
-				root.manager.current = 'menu'
-				root.manager.transition.direction = 'left'
-		
-		Label:
-			markup: True
-			text: '[size=45][b][color=00BFFF]Jukebar for drinkers[/color][/b][/size]\nNew line.'
+        Button:
+            text: u'Back'
+            on_press:
+                root.manager.current = 'menu'
+                root.manager.transition.direction = 'left'
+
+        Label:
+            markup: True
+            text: '[size=45][b][color=00BFFF]Jukebar for drinkers[/color][/b][/size]\nNew line.'
 
 <MenuScreen@Screen>:
-	BoxLayout:
+    BoxLayout:
         orientation: 'vertical'
-		
-		Button:
-			text: u'Back'
-			on_press:
-				root.manager.current = 'main'
-				root.manager.transition.direction = 'left'
 
-		Button:
-			text: u'Settings'
-			on_press:
-				root.manager.current = 'setting'
-				root.manager.transition.direction = 'right'
+        Button:
+            text: u'Back'
+            on_press:
+                root.manager.current = 'main'
+                root.manager.transition.direction = 'left'
 
-		Button:
-			text: u'About'
-			on_press:
-				root.manager.current = 'about'
-				root.manager.transition.direction = 'right'
+        Button:
+            text: u'Settings'
+            on_press:
+                root.manager.current = 'setting'
+                root.manager.transition.direction = 'right'
 
-		Button:
-			text: u'Close'
-			# TODO: stop running threads
-			on_press: app.stop()
+        Button:
+            text: u'About'
+            on_press:
+                root.manager.current = 'about'
+                root.manager.transition.direction = 'right'
+
+        Button:
+            text: u'Close'
+            # TODO: stop running threads
+            on_press: app.stop()
 
 
 <MainScreen@Screen>:
-	toggle_juke_property: toggle_juke_id
+    toggle_juke_property: toggle_juke_id
 
     FloatLayout:
 
-		AnchorLayout:
-			anchor_x: 'left'
-			anchor_y: 'top'
-			Button:
-				text: 'Settings'
-				size: self.texture_size
-				size_hint: None, None
-				padding: 50, 50
-				# on_press: root.on_settings_action()
-				on_press:
-					root.manager.current = 'menu'
-					root.manager.transition.direction = 'right'
+        AnchorLayout:
+            anchor_x: 'left'
+            anchor_y: 'top'
+            Button:
+                text: 'Settings'
+                size: self.texture_size
+                size_hint: None, None
+                padding: 50, 50
+                # on_press: root.on_settings_action()
+                on_press:
+                    root.manager.current = 'menu'
+                    root.manager.transition.direction = 'right'
 
-		AnchorLayout:
-			anchor_x: 'center'
-			anchor_y: 'center'
-			ToggleButton:
-				id: toggle_juke_id
-				text: 'Start Juke'
-				size: self.texture_size
-				size_hint: None, None
-				padding: 50, 50
-				on_state:
-					root.toggle_juke_action()
+        AnchorLayout:
+            anchor_x: 'center'
+            anchor_y: 'center'
+            ToggleButton:
+                id: toggle_juke_id
+                text: 'Start Juke'
+                size: self.texture_size
+                size_hint: None, None
+                padding: 50, 50
+                on_state:
+                    root.toggle_juke_action()
 
-				
+
 <Controller>:
-    
+
     ScreenManager:
 
         MainScreen:
@@ -127,6 +127,6 @@
             id: about_screen_id
             name: 'about'
 
-		SettingScreen:
+        SettingScreen:
             id: setting_screen_id
             name: 'setting'
