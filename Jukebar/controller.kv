@@ -39,20 +39,23 @@
                 root.manager.current = 'menu'
                 root.manager.transition.direction = 'left'
 
-        Button:
-            text: u'Add musics'
-            on_press: root.show_load()
-
-        Button:
-            text: u'Dell musics'
-            on_press: root.delete_music()
-
         ListView:
             id: cut_songs_lv_id
             adapter:
                 la.ListAdapter(
                 data=root.cut_songs_property,
                 cls=lv.ListItemButton)
+
+        BoxLayout:
+            orientation: 'horizontal'
+
+            Button:
+                text: u'+'
+                on_press: root.show_load()
+
+            Button:
+                text: u'-'
+                on_press: root.delete_music()
 
         BoxLayout:
             orientation: 'horizontal'
