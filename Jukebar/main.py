@@ -28,6 +28,11 @@ class MainScreen(Screen):
         setting_screen = controller.ids['setting_screen_id']
         return setting_screen
 
+    def get_cut_songs(self):
+        setting_screen = self.get_setting_screen()
+        cut_songs_property = setting_screen.cut_songs_property
+        return cut_songs_property
+
     def get_timer_min_value(self):
         setting_screen = self.get_setting_screen()
         timer_min_property = setting_screen.timer_min_property
@@ -43,9 +48,11 @@ class MainScreen(Screen):
         return timer_max_value
 
     def start_juke_action(self):
+        cut_songs = self.get_cut_songs()
         min_sleep_time = self.get_timer_min_value()
         max_sleep_time = self.get_timer_max_value()
         self.jukebar_thread = JukebarThread(
+            musics=cut_songs,
             min_sleep_time=min_sleep_time,
             max_sleep_time=max_sleep_time,
         )
