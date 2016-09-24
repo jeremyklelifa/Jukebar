@@ -84,6 +84,7 @@ class SettingScreen(Screen):
     timer_min_property = ObjectProperty()
     timer_max_property = ObjectProperty()
     cut_songs_property = ListProperty([])
+    cut_songs_lv_property = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(SettingScreen, self).__init__(**kwargs)
@@ -108,6 +109,18 @@ class SettingScreen(Screen):
         self._popup = Popup(title="Load file", content=content,
                             size_hint=(0.9, 0.9))
         self._popup.open()
+
+    def delete_music(self):
+        adapter = self.cut_songs_lv_property.adapter
+        selection = adapter.selection
+        if selection:
+            selection_text = selection[0].text
+            # adapter.data.remove(selection_text)
+            # self.cut_songs_lv_property._trigger_reset_populate()
+            cut_songs = self.cut_songs()
+            cut_songs.remove(selection_text)
+            self.store.put('cut_songs', list=cut_songs)
+            self.update_cut_songs_list_view()
 
     def dismiss_popup(self):
         self._popup.dismiss()

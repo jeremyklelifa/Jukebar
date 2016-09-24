@@ -28,6 +28,8 @@
 <SettingScreen@Screen>:
     timer_min_property: timer_min_id
     timer_max_property: timer_max_id
+    cut_songs_lv_property: cut_songs_lv_id
+
     BoxLayout:
         orientation: 'vertical'
 
@@ -42,12 +44,11 @@
             on_press: root.show_load()
 
         Button:
-            text: u'Modify musics'
-            on_press:
-                root.manager.current = 'Modify musics'
-                root.manager.transition.direction = 'right'
+            text: u'Dell musics'
+            on_press: root.delete_music()
 
         ListView:
+            id: cut_songs_lv_id
             adapter:
                 la.ListAdapter(
                 data=root.cut_songs_property,
