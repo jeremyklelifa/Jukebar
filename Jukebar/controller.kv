@@ -8,6 +8,7 @@
         orientation: "vertical"
         FileChooserListView:
             id: filechooser
+            path: root.path
 
         BoxLayout:
             size_hint_y: None
@@ -41,6 +42,8 @@
             on_press:
                 root.manager.current = 'Modify musics'
                 root.manager.transition.direction = 'right'
+        ListView:
+            item_strings: root.cut_songs_property
 
         BoxLayout:
             orientation: 'horizontal'

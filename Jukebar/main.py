@@ -1,23 +1,20 @@
-﻿"""
-Go to your project properties, either by right-clicking on the project and picking "Properties" or by picking Properties from the Project menu.
-Click on Debug, then enter your arguments into the "Script Arguments" field.
-Save.
--m screen:onex,portrait,scale=.75
-"""
-
-import os
-import kivy
-kivy.require('1.9.1')
-
+﻿import os
+from os.path import expanduser
+from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
-from kivy.app import App
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, StringProperty, ListProperty
+from kivy.storage.jsonstore import JsonStore
 from jukebar import JukebarThread
+
+
+JSON_STORE_PATH = "config.json"
+
 
 class MainScreen(Screen):
     toggle_juke_property = ObjectProperty()
+
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         self.jukebar_thread = None
@@ -69,16 +66,38 @@ class MainScreen(Screen):
             self.stop_juke_action()
             toggle_juke_property.text = "Start Juke"
 
+
 class LoadDialog(FloatLayout):
+    path = StringProperty(None)
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
+
 
 class SettingScreen(Screen):
     timer_min_property = ObjectProperty()
     timer_max_property = ObjectProperty()
+    cut_songs_property = ListProperty([])
+
+    def __init__(self, **kwargs):
+        super(SettingScreen, self).__init__(**kwargs)
+        json_store_path = App.get_running_app().json_store_path
+        self.store = JsonStore(json_store_path)
+        self.update_cut_songs_list_view()
+
+    def cut_songs(self):
+        """
+        Returns the current interruption songs list (full path).
+        """
+        try:
+            songs = self.store.get('cut_songs')['list']
+        except KeyError:
+            songs = []
+        return songs
 
     def show_load(self):
-        content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
+        home = expanduser("~")
+        content = LoadDialog(
+            load=self.load, cancel=self.dismiss_popup, path=home)
         self._popup = Popup(title="Load file", content=content,
                             size_hint=(0.9, 0.9))
         self._popup.open()
@@ -86,10 +105,19 @@ class SettingScreen(Screen):
     def dismiss_popup(self):
         self._popup.dismiss()
 
+    def update_cut_songs_list_view(self):
+        """
+        Updates the ListView with the current cut songs list.
+        """
+        self.cut_songs_property = self.cut_songs()
+
     def load(self, path, filename):
-        full_path = os.path.join(path, filename[0])
-        print "filename:", filename
+        cut_songs = self.cut_songs()
+        cut_songs.extend(filename)
+        self.store.put('cut_songs', list=cut_songs)
+        self.update_cut_songs_list_view()
         self.dismiss_popup()
+
 
 class Controller(FloatLayout):
     '''Create a controller that receives a custom widget from the kv lang file.
@@ -103,6 +131,13 @@ class ControllerApp(App):
 
     def build(self):
         return Controller()
+
+    @property
+    def json_store_path(self):
+        """
+        Returns the JSON store file path.
+        """
+        return os.path.join(self.user_data_dir, JSON_STORE_PATH)
 
 if __name__ == '__main__':
     ControllerApp().run()
