@@ -1,4 +1,8 @@
 #:kivy 1.0
+#:import label kivy.uix.label
+#:import lv kivy.uix.listview
+#:import sla kivy.adapters.simplelistadapter
+#:import la kivy.adapters.listadapter
 
 
 <LoadDialog>:
@@ -42,8 +46,12 @@
             on_press:
                 root.manager.current = 'Modify musics'
                 root.manager.transition.direction = 'right'
+
         ListView:
-            item_strings: root.cut_songs_property
+            adapter:
+                la.ListAdapter(
+                data=root.cut_songs_property,
+                cls=lv.ListItemButton)
 
         BoxLayout:
             orientation: 'horizontal'
