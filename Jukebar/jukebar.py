@@ -93,6 +93,7 @@ class JukebarThread(threading.Thread):
 
     def run(self):
         self.jukebar.run(
+                self._musics,
                 min_sleep_time=self._min_sleep_time,
                 max_sleep_time=self._max_sleep_time)
 
