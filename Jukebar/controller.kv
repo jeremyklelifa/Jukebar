@@ -35,44 +35,48 @@
     BoxLayout:
         orientation: 'vertical'
 
-        MDLabel:
-            text: 'Interrupt songs'
-            theme_text_color: 'Secondary'
-            font_style: "Title"
-            size_hint_y: None
-            height: dp(36)
-
-        ScrollView:
-            do_scroll_x: False
-            MDList:
-                id: cut_songs_mdl_id
-                OneLineRightIconListItem:
-                    # seems we have to add at least one item
-                    text: "test"
-                    MDCheckboxRight:
-
         BoxLayout:
-            orientation: 'horizontal'
-            padding: dp(8)
-            spacing: dp(4)
+            orientation: 'vertical'
 
-            MDFloatingActionButton:
-                icon: 'plus'
-                size_hint: None, None
-                size: dp(56), dp(56)
-                opposite_colors: True
-                elevation_normal: 8
-                # pos_hint: {'center_x': 0.5, 'center_y': 0.25}
-                on_press: root.show_load()
+            MDLabel:
+                text: 'Interrupt songs'
+                theme_text_color: 'Secondary'
+                font_style: "Title"
+                size_hint_y: None
+                height: dp(36)
 
-            MDFloatingActionButton:
-                icon: 'minus'
-                size_hint: None, None
-                size: dp(56), dp(56)
-                opposite_colors: True
-                elevation_normal: 8
-                # pos_hint: {'center_x': 0.5, 'center_y': 0.25}
-                on_press: root.delete_music()
+            ScrollView:
+                do_scroll_x: False
+
+                MDList:
+                    id: cut_songs_mdl_id
+                    OneLineRightIconListItem:
+                        # seems we have to add at least one item
+                        text: "test"
+                        MDCheckboxRight:
+
+            BoxLayout:
+                orientation: 'horizontal'
+                padding: dp(8)
+                spacing: dp(4)
+                height: dp(36)
+                size_hint_y: None
+
+                MDFloatingActionButton:
+                    icon: 'plus'
+                    size_hint: None, None
+                    size: dp(56), dp(56)
+                    opposite_colors: True
+                    elevation_normal: 8
+                    on_press: root.show_load()
+
+                MDFloatingActionButton:
+                    icon: 'minus'
+                    size_hint: None, None
+                    size: dp(56), dp(56)
+                    opposite_colors: True
+                    elevation_normal: 8
+                    on_press: root.delete_music()
 
         # MDLabel:
         #     text: 'Timer:'
@@ -80,6 +84,8 @@
 
         BoxLayout:
             orientation: 'horizontal'
+            size_hint_y: None
+            height: dp(100)
             spacing: 10
 
             BoxLayout:
@@ -130,7 +136,7 @@
 
 <JukebarNavigationDrawer>
 
-    title: "NavigationDrawer"
+    title: "Menu"
 
     NavigationDrawerIconButton:
         icon: 'circle'
