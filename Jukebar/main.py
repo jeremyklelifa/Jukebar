@@ -89,17 +89,16 @@ class SettingScreen(Screen):
         super(SettingScreen, self).__init__(**kwargs)
         # for some reason cut_songs_mdl_property is None
         # if calling straight away
-        # self.update_cut_songs_list_view()
         Clock.schedule_once(
-            lambda dt: self.update_cut_songs_list_view(), 0)
+            lambda dt: self.update_widgets(), 0)
 
-    def on_timer_min_changed(self):
+    def on_pre_leave(self):
+        """
+        Saves settings.
+        """
         app = App.get_running_app()
-        app.store.put('timer_max', value=self.timer_min_property.text)
-
-    def on_timer_max_changed(self):
-        app = App.get_running_app()
-        app.store.put('timer_max', value=self.timer_max_property.text)
+        app.store.put('timer_min', value=self.timer_min_property.value)
+        app.store.put('timer_max', value=self.timer_max_property.value)
 
     def show_load(self):
         home = expanduser("~")
@@ -123,6 +122,14 @@ class SettingScreen(Screen):
     def dismiss_popup(self):
         self._popup.dismiss()
 
+    def update_min_max_sliders(self):
+        """
+        Updates the min and max timer sliders last saved state.
+        """
+        app = App.get_running_app()
+        self.timer_min_property.value = app.timer_min()
+        self.timer_max_property.value = app.timer_max()
+
     def update_cut_songs_list_view(self):
         """
         Updates the ListView with the current cut songs list.
@@ -139,6 +146,13 @@ class SettingScreen(Screen):
             checkbox = MDCheckboxRight()
             item.add_widget(checkbox)
             cut_songs_mdl_property.add_widget(item)
+
+    def update_widgets(self):
+        """
+        Updates widgets with previous saved state.
+        """
+        self.update_cut_songs_list_view()
+        self.update_min_max_sliders()
 
     def load(self, path, filename):
         app = App.get_running_app()
@@ -194,7 +208,7 @@ class ControllerApp(App):
         Returns the current timer min value.
         """
         try:
-            timer = self.store.get('timer_min')['list']
+            timer = self.store.get('timer_min')['value']
         except KeyError:
             timer = 0
         return timer
@@ -204,7 +218,7 @@ class ControllerApp(App):
         Returns the current timer max value.
         """
         try:
-            timer = self.store.get('timer_max')['list']
+            timer = self.store.get('timer_max')['value']
         except KeyError:
             timer = 0
         return timer

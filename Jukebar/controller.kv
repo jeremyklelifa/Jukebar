@@ -1,6 +1,7 @@
 #:kivy 1.0
 #:import label kivy.uix.label
 #:import Toolbar kivymd.toolbar.Toolbar
+#:import MDSlider kivymd.slider.MDSlider
 #:import OneLineListItem kivymd.list.OneLineListItem
 #:import MDCheckbox kivymd.selectioncontrols.MDCheckbox
 #:import NavigationDrawer kivymd.navigationdrawer.NavigationDrawer
@@ -73,20 +74,39 @@
                 # pos_hint: {'center_x': 0.5, 'center_y': 0.25}
                 on_press: root.delete_music()
 
+        # MDLabel:
+        #     text: 'Timer:'
+        #     theme_text_color: 'Primary'
+
         BoxLayout:
             orientation: 'horizontal'
             spacing: 10
-            MDLabel:
-                text: 'Timer:'
-                theme_text_color: 'Primary'
-            TextInput:
-                id: timer_min_id
-                text: '1'
-                on_text_validate: root.on_timer_min_changed()
-            TextInput:
-                id: timer_max_id
-                text: '10'
-                on_text_validate: root.on_timer_max_changed()
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                MDLabel:
+                    text: 'Timer min: %s seconds' % (int(timer_min_id.value))
+                    theme_text_color: 'Secondary'
+
+                MDSlider:
+                    id: timer_min_id
+                    min: 0
+                    step: 1
+                    value: 1
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                MDLabel:
+                    text: 'Timer max: %s seconds' % (int(timer_max_id.value))
+                    theme_text_color: 'Secondary'
+
+                MDSlider:
+                    id: timer_max_id
+                    min: 0
+                    step: 1
+                    value: 10
 
 <AboutScreen@Screen>:
     BoxLayout:
