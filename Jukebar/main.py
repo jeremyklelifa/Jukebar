@@ -7,6 +7,7 @@ from kivy.uix.popup import Popup
 from kivy.properties import ObjectProperty, StringProperty, ListProperty
 from kivy.storage.jsonstore import JsonStore
 from kivymd.theming import ThemeManager
+from kivymd.navigationdrawer import NavigationDrawer
 from jukebar import JukebarThread
 
 
@@ -136,13 +137,19 @@ class Controller(FloatLayout):
     pass
 
 
+class JukebarNavigationDrawer(NavigationDrawer):
+    pass
+
+
 class ControllerApp(App):
     theme_cls = ThemeManager()
+    nav_drawer = ObjectProperty()
 
     def build(self):
         # json_store_path = App.get_running_app().json_store_path
         json_store_path = self.json_store_path
         self.store = JsonStore(json_store_path)
+        self.nav_drawer = JukebarNavigationDrawer()
         return Controller()
 
     @property

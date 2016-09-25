@@ -4,6 +4,7 @@
 #:import sla kivy.adapters.simplelistadapter
 #:import la kivy.adapters.listadapter
 #:import Toolbar kivymd.toolbar.Toolbar
+#:import NavigationDrawer kivymd.navigationdrawer.NavigationDrawer
 
 
 <LoadDialog>:
@@ -34,12 +35,6 @@
     BoxLayout:
         orientation: 'vertical'
 
-        Button:
-            text: u'Back'
-            on_press:
-                root.manager.current = 'menu'
-                root.manager.transition.direction = 'left'
-
         ListView:
             id: cut_songs_lv_id
             adapter:
@@ -63,7 +58,7 @@
             spacing: 10
             MDLabel:
                 markup: True
-                text: '[size=30][b][color=FFFFFF]Timer:[/color][/b][/size]'
+                text: 'Timer:'
             TextInput:
                 id: timer_min_id
                 text: '1'
@@ -77,66 +72,43 @@
     BoxLayout:
         orientation: 'vertical'
 
-        Button:
-            text: u'Back'
-            on_press:
-                root.manager.current = 'menu'
-                root.manager.transition.direction = 'left'
-
         MDLabel:
             markup: True
             text: '[size=45][b][color=00BFFF]Jukebar for drinkers[/color][/b][/size]\nNew line.'
 
-<MenuScreen@Screen>:
-    BoxLayout:
-        orientation: 'vertical'
-
-        Button:
-            text: u'Back'
-            on_press:
-                root.manager.current = 'main'
-                root.manager.transition.direction = 'left'
-
-        Button:
-            text: u'Settings'
-            on_press:
-                root.manager.current = 'setting'
-                root.manager.transition.direction = 'right'
-
-        Button:
-            text: u'About'
-            on_press:
-                root.manager.current = 'about'
-                root.manager.transition.direction = 'right'
-
-        Button:
-            text: u'Close'
-            # TODO: stop running threads
-            on_press: app.stop()
-
 
 <MainScreen@Screen>:
 
-    MDFlatButton:
-        text: 'Settings'
-        # size: self.texture_size
-        # size_hint: None, None
-        # padding: 50, 50
-        size: 4 * dp(48), dp(48)
-        pos_hint: {'center_x': 0.5, 'center_y': 0.6}
-        on_press:
-            root.manager.current = 'menu'
-            root.manager.transition.direction = 'right'
-
-    # ToggleButton:
-    MDFlatButton:
+    MDRaisedButton:
         text: 'Start Juke'
-        # size: self.texture_size
-        # size_hint: None, None
-        # padding: 50, 50
-        size: 4 * dp(48), dp(48)
-        pos_hint: {'center_x': 0.5, 'center_y': 0.3}
+        elevation_normal: 2
+        opposite_colors: True
+        size_hint: None, None
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         on_release: root.toggle_juke_action(self)
+
+
+<JukebarNavigationDrawer>
+
+    title: "NavigationDrawer"
+
+    NavigationDrawerIconButton:
+        icon: 'circle'
+        text: "Jukebar"
+        on_release:
+            app.root.ids.screen_manager.current = 'main'
+
+    NavigationDrawerIconButton:
+        icon: 'circle'
+        text: "Settings"
+        on_release:
+            app.root.ids.screen_manager.current = 'setting'
+
+    NavigationDrawerIconButton:
+        icon: 'circle'
+        text: "About"
+        on_release: app.root.ids.screen_manager.current = 'about'
+
 
 <Controller>:
 
@@ -148,17 +120,15 @@
             title: 'Jukebar'
             background_color: app.theme_cls.primary_color
             left_action_items: [['menu', lambda x: app.nav_drawer.toggle()]]
+            # left_action_items: [['arrow-left', lambda x: None]]
             right_action_items: [['more-vert', lambda x: app.nav_drawer.toggle()]]
 
         ScreenManager:
+            id: screen_manager
 
             MainScreen:
                 id: main_screen_id
                 name: 'main'
-
-            MenuScreen:
-                id: menu_screen_id
-                name: 'menu'
 
             AboutScreen:
                 id: about_screen_id
