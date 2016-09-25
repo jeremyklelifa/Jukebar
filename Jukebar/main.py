@@ -59,7 +59,7 @@ class MainScreen(Screen):
         if self.jukebar_thread is None:
             return
         self.jukebar_thread.stop()
-        self.jukebar_thread.join()
+        # self.jukebar_thread.join()
 
     def toggle_juke_action(self, button):
         action_start = button.text == "Start Juke"
