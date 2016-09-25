@@ -5,11 +5,11 @@ from kivy.clock import Clock
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
-from kivy.properties import ObjectProperty, StringProperty, ListProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.storage.jsonstore import JsonStore
 from kivymd.theming import ThemeManager
 from kivymd.navigationdrawer import NavigationDrawer
-from kivymd.list import OneLineListItem, OneLineIconListItem, IRightBodyTouch, OneLineRightIconListItem
+from kivymd.list import IRightBodyTouch, OneLineRightIconListItem
 from kivymd.selectioncontrols import MDCheckbox
 from jukebar import JukebarThread
 
@@ -76,6 +76,7 @@ class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
 
+
 class MDCheckboxRight(IRightBodyTouch, MDCheckbox):
     pass
 
@@ -139,8 +140,6 @@ class SettingScreen(Screen):
         cut_songs = app.cut_songs()
         cut_songs_mdl_property.clear_widgets()
         for cut_song in cut_songs:
-            # item = OneLineListItem(text=cut_song)
-            # item = OneLineIconListItem(text=cut_song)
             item = OneLineRightIconListItem(text=cut_song)
             # checkbox = MDCheckbox()
             checkbox = MDCheckboxRight()
