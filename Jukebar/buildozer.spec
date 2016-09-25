@@ -44,6 +44,7 @@ requirements = kivy,python2,kivymd
 
 # (list) Garden requirements
 #garden_requirements =
+garden_requirements = recycleview
 
 # (str) Presplash of the application
 #presplash.filename = %(source.dir)s/data/presplash.png
