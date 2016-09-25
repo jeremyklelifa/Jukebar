@@ -6,6 +6,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
 from kivy.properties import ObjectProperty, StringProperty, ListProperty
 from kivy.storage.jsonstore import JsonStore
+from kivymd.theming import ThemeManager
 from jukebar import JukebarThread
 
 
@@ -28,27 +29,19 @@ class MainScreen(Screen):
         setting_screen = controller.ids['setting_screen_id']
         return setting_screen
 
-    def get_cut_songs(self):
-        setting_screen = self.get_setting_screen()
-        cut_songs_property = setting_screen.cut_songs_property
-        return cut_songs_property
-
     def get_timer_min_value(self):
-        setting_screen = self.get_setting_screen()
-        timer_min_property = setting_screen.timer_min_property
-        timer_min_text = timer_min_property.text
-        timer_min_value = int(timer_min_text)
+        app = App.get_running_app()
+        timer_min_value = app.timer_min()
         return timer_min_value
 
     def get_timer_max_value(self):
-        setting_screen = self.get_setting_screen()
-        timer_max_property = setting_screen.timer_max_property
-        timer_max_text = timer_max_property.text
-        timer_max_value = int(timer_max_text)
+        app = App.get_running_app()
+        timer_max_value = app.timer_max()
         return timer_max_value
 
     def start_juke_action(self):
-        cut_songs = self.get_cut_songs()
+        app = App.get_running_app()
+        cut_songs = app.cut_songs()
         min_sleep_time = self.get_timer_min_value()
         max_sleep_time = self.get_timer_max_value()
         self.jukebar_thread = JukebarThread(
@@ -64,14 +57,14 @@ class MainScreen(Screen):
         self.jukebar_thread.stop()
         self.jukebar_thread.join()
 
-    def toggle_juke_action(self):
-        toggle_juke_property = self.toggle_juke_property
-        if toggle_juke_property.state == 'down':
+    def toggle_juke_action(self, button):
+        action_start = button.text == "Start Juke"
+        if action_start:
             self.start_juke_action()
-            toggle_juke_property.text = "Stop Juke"
+            button.text = "Stop Juke"
         else:
             self.stop_juke_action()
-            toggle_juke_property.text = "Start Juke"
+            button.text = "Start Juke"
 
 
 class LoadDialog(FloatLayout):
@@ -81,26 +74,20 @@ class LoadDialog(FloatLayout):
 
 
 class SettingScreen(Screen):
-    timer_min_property = ObjectProperty()
     timer_max_property = ObjectProperty()
+    timer_min_property = ObjectProperty()
     cut_songs_property = ListProperty([])
     cut_songs_lv_property = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(SettingScreen, self).__init__(**kwargs)
-        json_store_path = App.get_running_app().json_store_path
-        self.store = JsonStore(json_store_path)
         self.update_cut_songs_list_view()
 
-    def cut_songs(self):
-        """
-        Returns the current interruption songs list (full path).
-        """
-        try:
-            songs = self.store.get('cut_songs')['list']
-        except KeyError:
-            songs = []
-        return songs
+    def on_timer_min_changed(self):
+        self.store.put('timer_max', value=self.timer_min_property.text)
+
+    def on_timer_max_changed(self):
+        self.store.put('timer_max', value=self.timer_max_property.text)
 
     def show_load(self):
         home = expanduser("~")
@@ -129,10 +116,12 @@ class SettingScreen(Screen):
         """
         Updates the ListView with the current cut songs list.
         """
-        self.cut_songs_property = self.cut_songs()
+        app = App.get_running_app()
+        self.cut_songs_property = app.cut_songs()
 
     def load(self, path, filename):
-        cut_songs = self.cut_songs()
+        app = App.get_running_app()
+        cut_songs = app.cut_songs()
         cut_songs.extend(filename)
         self.store.put('cut_songs', list=cut_songs)
         self.update_cut_songs_list_view()
@@ -148,8 +137,12 @@ class Controller(FloatLayout):
 
 
 class ControllerApp(App):
+    theme_cls = ThemeManager()
 
     def build(self):
+        # json_store_path = App.get_running_app().json_store_path
+        json_store_path = self.json_store_path
+        self.store = JsonStore(json_store_path)
         return Controller()
 
     @property
@@ -158,6 +151,36 @@ class ControllerApp(App):
         Returns the JSON store file path.
         """
         return os.path.join(self.user_data_dir, JSON_STORE_PATH)
+
+    def cut_songs(self):
+        """
+        Returns the current interruption songs list (full path).
+        """
+        try:
+            songs = self.store.get('cut_songs')['list']
+        except KeyError:
+            songs = []
+        return songs
+
+    def timer_min(self):
+        """
+        Returns the current timer min value.
+        """
+        try:
+            timer = self.store.get('timer_min')['list']
+        except KeyError:
+            timer = 0
+        return timer
+
+    def timer_max(self):
+        """
+        Returns the current timer max value.
+        """
+        try:
+            timer = self.store.get('timer_max')['list']
+        except KeyError:
+            timer = 0
+        return timer
 
 if __name__ == '__main__':
     ControllerApp().run()

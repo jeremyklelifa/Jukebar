@@ -3,6 +3,7 @@
 #:import lv kivy.uix.listview
 #:import sla kivy.adapters.simplelistadapter
 #:import la kivy.adapters.listadapter
+#:import Toolbar kivymd.toolbar.Toolbar
 
 
 <LoadDialog>:
@@ -60,15 +61,17 @@
         BoxLayout:
             orientation: 'horizontal'
             spacing: 10
-            Label:
+            MDLabel:
                 markup: True
                 text: '[size=30][b][color=FFFFFF]Timer:[/color][/b][/size]'
             TextInput:
                 id: timer_min_id
                 text: '1'
+                on_text_validate: root.on_timer_min_changed()
             TextInput:
                 id: timer_max_id
                 text: '10'
+                on_text_validate: root.on_timer_max_changed()
 
 <AboutScreen@Screen>:
     BoxLayout:
@@ -80,7 +83,7 @@
                 root.manager.current = 'menu'
                 root.manager.transition.direction = 'left'
 
-        Label:
+        MDLabel:
             markup: True
             text: '[size=45][b][color=00BFFF]Jukebar for drinkers[/color][/b][/size]\nNew line.'
 
@@ -113,52 +116,54 @@
 
 
 <MainScreen@Screen>:
-    toggle_juke_property: toggle_juke_id
 
-    FloatLayout:
+    MDFlatButton:
+        text: 'Settings'
+        # size: self.texture_size
+        # size_hint: None, None
+        # padding: 50, 50
+        size: 4 * dp(48), dp(48)
+        pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+        on_press:
+            root.manager.current = 'menu'
+            root.manager.transition.direction = 'right'
 
-        AnchorLayout:
-            anchor_x: 'left'
-            anchor_y: 'top'
-            Button:
-                text: 'Settings'
-                size: self.texture_size
-                size_hint: None, None
-                padding: 50, 50
-                # on_press: root.on_settings_action()
-                on_press:
-                    root.manager.current = 'menu'
-                    root.manager.transition.direction = 'right'
-
-        AnchorLayout:
-            anchor_x: 'center'
-            anchor_y: 'center'
-            ToggleButton:
-                id: toggle_juke_id
-                text: 'Start Juke'
-                size: self.texture_size
-                size_hint: None, None
-                padding: 50, 50
-                on_state:
-                    root.toggle_juke_action()
-
+    # ToggleButton:
+    MDFlatButton:
+        text: 'Start Juke'
+        # size: self.texture_size
+        # size_hint: None, None
+        # padding: 50, 50
+        size: 4 * dp(48), dp(48)
+        pos_hint: {'center_x': 0.5, 'center_y': 0.3}
+        on_release: root.toggle_juke_action(self)
 
 <Controller>:
 
-    ScreenManager:
+    BoxLayout:
+        orientation: 'vertical'
 
-        MainScreen:
-            id: main_screen_id
-            name: 'main'
+        Toolbar:
+            id: toolbar_id
+            title: 'Jukebar'
+            background_color: app.theme_cls.primary_color
+            left_action_items: [['menu', lambda x: app.nav_drawer.toggle()]]
+            right_action_items: [['more-vert', lambda x: app.nav_drawer.toggle()]]
 
-        MenuScreen:
-            id: menu_screen_id
-            name: 'menu'
+        ScreenManager:
 
-        AboutScreen:
-            id: about_screen_id
-            name: 'about'
+            MainScreen:
+                id: main_screen_id
+                name: 'main'
 
-        SettingScreen:
-            id: setting_screen_id
-            name: 'setting'
+            MenuScreen:
+                id: menu_screen_id
+                name: 'menu'
+
+            AboutScreen:
+                id: about_screen_id
+                name: 'about'
+
+            SettingScreen:
+                id: setting_screen_id
+                name: 'setting'
