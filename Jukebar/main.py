@@ -219,7 +219,7 @@ class ControllerApp(App):
         try:
             timer = self.store.get('timer_max')['value']
         except KeyError:
-            timer = 0
+            timer = 10
         return timer
 
 if __name__ == '__main__':
