@@ -1,9 +1,8 @@
 #:kivy 1.0
 #:import label kivy.uix.label
-#:import lv kivy.uix.listview
-#:import sla kivy.adapters.simplelistadapter
-#:import la kivy.adapters.listadapter
 #:import Toolbar kivymd.toolbar.Toolbar
+#:import OneLineListItem kivymd.list.OneLineListItem
+#:import MDCheckbox kivymd.selectioncontrols.MDCheckbox
 #:import NavigationDrawer kivymd.navigationdrawer.NavigationDrawer
 
 
@@ -30,17 +29,19 @@
 <SettingScreen@Screen>:
     timer_min_property: timer_min_id
     timer_max_property: timer_max_id
-    cut_songs_lv_property: cut_songs_lv_id
+    cut_songs_mdl_property: cut_songs_mdl_id
 
     BoxLayout:
         orientation: 'vertical'
 
-        ListView:
-            id: cut_songs_lv_id
-            adapter:
-                la.ListAdapter(
-                data=root.cut_songs_property,
-                cls=lv.ListItemButton)
+        ScrollView:
+            do_scroll_x: False
+            MDList:
+                id: cut_songs_mdl_id
+                OneLineRightIconListItem:
+                    # seems we have to add at least one item
+                    text: "test"
+                    MDCheckboxRight:
 
         BoxLayout:
             orientation: 'horizontal'
@@ -57,8 +58,8 @@
             orientation: 'horizontal'
             spacing: 10
             MDLabel:
-                markup: True
                 text: 'Timer:'
+                theme_text_color: 'Primary'
             TextInput:
                 id: timer_min_id
                 text: '1'

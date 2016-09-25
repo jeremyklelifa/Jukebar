@@ -1,6 +1,7 @@
 ﻿import os
 from os.path import expanduser
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
@@ -8,6 +9,8 @@ from kivy.properties import ObjectProperty, StringProperty, ListProperty
 from kivy.storage.jsonstore import JsonStore
 from kivymd.theming import ThemeManager
 from kivymd.navigationdrawer import NavigationDrawer
+from kivymd.list import OneLineListItem, OneLineIconListItem, IRightBodyTouch, OneLineRightIconListItem
+from kivymd.selectioncontrols import MDCheckbox
 from jukebar import JukebarThread
 
 
@@ -73,22 +76,30 @@ class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
 
+class MDCheckboxRight(IRightBodyTouch, MDCheckbox):
+    pass
+
 
 class SettingScreen(Screen):
     timer_max_property = ObjectProperty()
     timer_min_property = ObjectProperty()
-    cut_songs_property = ListProperty([])
-    cut_songs_lv_property = ObjectProperty()
+    cut_songs_mdl_property = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(SettingScreen, self).__init__(**kwargs)
-        self.update_cut_songs_list_view()
+        # for some reason cut_songs_mdl_property is None
+        # if calling straight away
+        # self.update_cut_songs_list_view()
+        Clock.schedule_once(
+            lambda dt: self.update_cut_songs_list_view(), 0)
 
     def on_timer_min_changed(self):
-        self.store.put('timer_max', value=self.timer_min_property.text)
+        app = App.get_running_app()
+        app.store.put('timer_max', value=self.timer_min_property.text)
 
     def on_timer_max_changed(self):
-        self.store.put('timer_max', value=self.timer_max_property.text)
+        app = App.get_running_app()
+        app.store.put('timer_max', value=self.timer_max_property.text)
 
     def show_load(self):
         home = expanduser("~")
@@ -99,16 +110,15 @@ class SettingScreen(Screen):
         self._popup.open()
 
     def delete_music(self):
-        adapter = self.cut_songs_lv_property.adapter
-        selection = adapter.selection
-        if selection:
-            selection_text = selection[0].text
-            # adapter.data.remove(selection_text)
-            # self.cut_songs_lv_property._trigger_reset_populate()
-            cut_songs = self.cut_songs()
-            cut_songs.remove(selection_text)
-            self.store.put('cut_songs', list=cut_songs)
-            self.update_cut_songs_list_view()
+        cut_songs_mdl_property = self.cut_songs_mdl_property
+        app = App.get_running_app()
+        cut_songs = app.cut_songs()
+        for item in cut_songs_mdl_property.children:
+            checkbox = item.children[0].children[0]
+            if checkbox.state == "down":
+                cut_songs.remove(item.text)
+        app.store.put('cut_songs', list=cut_songs)
+        self.update_cut_songs_list_view()
 
     def dismiss_popup(self):
         self._popup.dismiss()
@@ -117,14 +127,24 @@ class SettingScreen(Screen):
         """
         Updates the ListView with the current cut songs list.
         """
+        cut_songs_mdl_property = self.cut_songs_mdl_property
         app = App.get_running_app()
-        self.cut_songs_property = app.cut_songs()
+        cut_songs = app.cut_songs()
+        cut_songs_mdl_property.clear_widgets()
+        for cut_song in cut_songs:
+            # item = OneLineListItem(text=cut_song)
+            # item = OneLineIconListItem(text=cut_song)
+            item = OneLineRightIconListItem(text=cut_song)
+            # checkbox = MDCheckbox()
+            checkbox = MDCheckboxRight()
+            item.add_widget(checkbox)
+            cut_songs_mdl_property.add_widget(item)
 
     def load(self, path, filename):
         app = App.get_running_app()
         cut_songs = app.cut_songs()
         cut_songs.extend(filename)
-        self.store.put('cut_songs', list=cut_songs)
+        app.store.put('cut_songs', list=cut_songs)
         self.update_cut_songs_list_view()
         self.dismiss_popup()
 
