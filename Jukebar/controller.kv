@@ -34,6 +34,13 @@
     BoxLayout:
         orientation: 'vertical'
 
+        MDLabel:
+            text: 'Interrupt songs'
+            theme_text_color: 'Secondary'
+            font_style: "Title"
+            size_hint_y: None
+            height: dp(36)
+
         ScrollView:
             do_scroll_x: False
             MDList:
@@ -45,13 +52,25 @@
 
         BoxLayout:
             orientation: 'horizontal'
+            padding: dp(8)
+            spacing: dp(4)
 
-            Button:
-                text: u'+'
+            MDFloatingActionButton:
+                icon: 'plus'
+                size_hint: None, None
+                size: dp(56), dp(56)
+                opposite_colors: True
+                elevation_normal: 8
+                # pos_hint: {'center_x': 0.5, 'center_y': 0.25}
                 on_press: root.show_load()
 
-            Button:
-                text: u'-'
+            MDFloatingActionButton:
+                icon: 'minus'
+                size_hint: None, None
+                size: dp(56), dp(56)
+                opposite_colors: True
+                elevation_normal: 8
+                # pos_hint: {'center_x': 0.5, 'center_y': 0.25}
                 on_press: root.delete_music()
 
         BoxLayout:
