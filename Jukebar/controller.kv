@@ -20,13 +20,23 @@
         BoxLayout:
             size_hint_y: None
             height: 30
-            Button:
-                text: "Cancel"
-                on_release: root.cancel()
+            spacing: dp(4)
 
-            Button:
-                text: "Load"
+            MDRaisedButton:
+                text: 'OK'
+                elevation_normal: 2
+                opposite_colors: True
+                size_hint: None, None
+                size: 3 * dp(48), dp(48)
                 on_release: root.load(filechooser.path, filechooser.selection)
+
+            MDRaisedButton:
+                text: 'Cancel'
+                elevation_normal: 2
+                opposite_colors: True
+                size_hint: None, None
+                size: 3 * dp(48), dp(48)
+                on_release: root.cancel()
 
 <SettingScreen@Screen>:
     timer_min_property: timer_min_id
