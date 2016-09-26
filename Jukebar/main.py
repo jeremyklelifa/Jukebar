@@ -8,6 +8,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.storage.jsonstore import JsonStore
+from kivymd.dialog import MDDialog
 from kivymd.theming import ThemeManager
 from kivymd.navigationdrawer import NavigationDrawer
 from kivymd.list import IRightBodyTouch, OneLineRightIconListItem
@@ -66,9 +67,10 @@ class MainScreen(Screen):
         """
         app = App.get_running_app()
         if len(app.cut_songs()) == 0:
-            popup = PopupMessage(
+            popup = MDPopupMessage(
                     title="Error",
                     body="Your interruption songs list is empty.")
+            popup.add_action_button("Dismiss", action=lambda *x: popup.dismiss())
             popup.open()
             return False
         return True
@@ -93,6 +95,11 @@ class AboutScreen(Screen):
 
 
 class PopupMessage(Popup):
+    title = StringProperty()
+    body = StringProperty()
+
+
+class MDPopupMessage(MDDialog):
     title = StringProperty()
     body = StringProperty()
 
