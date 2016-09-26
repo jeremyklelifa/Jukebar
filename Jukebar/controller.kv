@@ -1,132 +1,191 @@
 #:kivy 1.0
+#:import label kivy.uix.label
+#:import webbrowser webbrowser
+#:import Toolbar kivymd.toolbar.Toolbar
+#:import MDSlider kivymd.slider.MDSlider
+#:import OneLineListItem kivymd.list.OneLineListItem
+#:import MDCheckbox kivymd.selectioncontrols.MDCheckbox
+#:import NavigationDrawer kivymd.navigationdrawer.NavigationDrawer
 
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            path: root.path
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
 
 <SettingScreen@Screen>:
-	timer_min_property: timer_min_id
-	timer_max_property: timer_max_id
-	BoxLayout:
+    timer_min_property: timer_min_id
+    timer_max_property: timer_max_id
+    cut_songs_mdl_property: cut_songs_mdl_id
+
+    BoxLayout:
         orientation: 'vertical'
 
-		Button:
-			text: u'Back'
-			on_press:
-				root.manager.current = 'menu'
-				root.manager.transition.direction = 'left'
+        BoxLayout:
+            orientation: 'vertical'
 
-		Button:
-			text: u'Add musics'
-			on_press:
-				root.manager.current = 'Add musics'
-				root.manager.transition.direction = 'right'
+            MDLabel:
+                text: 'Interrupt songs'
+                theme_text_color: 'Secondary'
+                font_style: "Title"
+                size_hint_y: None
+                height: dp(36)
 
-		Button:
-			text: u'Modify musics'
-			on_press:
-				root.manager.current = 'Modify musics'
-				root.manager.transition.direction = 'right'
+            ScrollView:
+                do_scroll_x: False
 
-		BoxLayout:
-			orientation: 'horizontal'
-			spacing: 10
-			Label:
-				markup: True
-				text: '[size=30][b][color=FFFFFF]Timer:[/color][/b][/size]'
-			TextInput:
-				id: timer_min_id
-				text: '1'
-			TextInput:
-				id: timer_max_id
-				text: '10'
+                MDList:
+                    id: cut_songs_mdl_id
+                    OneLineRightIconListItem:
+                        # seems we have to add at least one item
+                        text: "test"
+                        MDCheckboxRight:
+
+            BoxLayout:
+                orientation: 'horizontal'
+                padding: dp(8)
+                spacing: dp(4)
+                height: dp(36)
+                size_hint_y: None
+
+                MDFloatingActionButton:
+                    icon: 'plus'
+                    size_hint: None, None
+                    size: dp(56), dp(56)
+                    opposite_colors: True
+                    elevation_normal: 8
+                    on_press: root.show_load()
+
+                MDFloatingActionButton:
+                    icon: 'minus'
+                    size_hint: None, None
+                    size: dp(56), dp(56)
+                    opposite_colors: True
+                    elevation_normal: 8
+                    on_press: root.delete_music()
+
+        # MDLabel:
+        #     text: 'Timer:'
+        #     theme_text_color: 'Primary'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: dp(100)
+            spacing: 10
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                MDLabel:
+                    text: 'Timer min: %s seconds' % (int(timer_min_id.value))
+                    theme_text_color: 'Secondary'
+
+                MDSlider:
+                    id: timer_min_id
+                    min: 0
+                    step: 1
+                    value: 1
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                MDLabel:
+                    text: 'Timer max: %s seconds' % (int(timer_max_id.value))
+                    theme_text_color: 'Secondary'
+
+                MDSlider:
+                    id: timer_max_id
+                    min: 0
+                    step: 1
+                    value: 10
 
 <AboutScreen@Screen>:
-	BoxLayout:
-        orientation: 'vertical'
+    ScrollView:
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
 
-		Button:
-			text: u'Back'
-			on_press:
-				root.manager.current = 'menu'
-				root.manager.transition.direction = 'left'
-		
-		Label:
-			markup: True
-			text: '[size=45][b][color=00BFFF]Jukebar for drinkers[/color][/b][/size]\nNew line.'
-
-<MenuScreen@Screen>:
-	BoxLayout:
-        orientation: 'vertical'
-		
-		Button:
-			text: u'Back'
-			on_press:
-				root.manager.current = 'main'
-				root.manager.transition.direction = 'left'
-
-		Button:
-			text: u'Settings'
-			on_press:
-				root.manager.current = 'setting'
-				root.manager.transition.direction = 'right'
-
-		Button:
-			text: u'About'
-			on_press:
-				root.manager.current = 'about'
-				root.manager.transition.direction = 'right'
-
-		Button:
-			text: u'Close'
-			# TODO: stop running threads
-			on_press: app.stop()
+            MDLabel:
+                markup: True
+                text: root.about_text_property
+                theme_text_color: 'Primary'
+                on_ref_press: webbrowser.open('https://github.com/jeremyklelifa/Jukebar')
 
 
 <MainScreen@Screen>:
-	toggle_juke_property: toggle_juke_id
 
-    FloatLayout:
+    MDRaisedButton:
+        text: 'Start Juke'
+        elevation_normal: 2
+        opposite_colors: True
+        size_hint: None, None
+        size: 3 * dp(48), dp(48)
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        on_release: root.toggle_juke_action(self)
 
-		AnchorLayout:
-			anchor_x: 'left'
-			anchor_y: 'top'
-			Button:
-				text: 'Settings'
-				size: self.texture_size
-				size_hint: None, None
-				padding: 50, 50
-				# on_press: root.on_settings_action()
-				on_press:
-					root.manager.current = 'menu'
-					root.manager.transition.direction = 'right'
 
-		AnchorLayout:
-			anchor_x: 'center'
-			anchor_y: 'center'
-			ToggleButton:
-				id: toggle_juke_id
-				text: 'Start Juke'
-				size: self.texture_size
-				size_hint: None, None
-				padding: 50, 50
-				on_state:
-					root.toggle_juke_action()
+<JukebarNavigationDrawer>
 
-				
+    title: "Menu"
+
+    NavigationDrawerIconButton:
+        icon: 'audio'
+        text: "Jukebar"
+        on_release:
+            app.root.ids.screen_manager.current = 'main'
+
+    NavigationDrawerIconButton:
+        icon: 'settings'
+        text: "Settings"
+        on_release:
+            app.root.ids.screen_manager.current = 'setting'
+
+    NavigationDrawerIconButton:
+        icon: 'info'
+        text: "About"
+        on_release: app.root.ids.screen_manager.current = 'about'
+
+
 <Controller>:
-    
-    ScreenManager:
 
-        MainScreen:
-            id: main_screen_id
-            name: 'main'
+    BoxLayout:
+        orientation: 'vertical'
 
-        MenuScreen:
-            id: menu_screen_id
-            name: 'menu'
+        Toolbar:
+            id: toolbar_id
+            title: 'Jukebar'
+            background_color: app.theme_cls.primary_color
+            left_action_items: [['menu', lambda x: app.nav_drawer.toggle()]]
+            # left_action_items: [['arrow-left', lambda x: None]]
+            right_action_items: [['more-vert', lambda x: app.nav_drawer.toggle()]]
 
-        AboutScreen:
-            id: about_screen_id
-            name: 'about'
+        ScreenManager:
+            id: screen_manager
 
-		SettingScreen:
-            id: setting_screen_id
-            name: 'setting'
+            MainScreen:
+                id: main_screen_id
+                name: 'main'
+
+            AboutScreen:
+                id: about_screen_id
+                name: 'about'
+
+            SettingScreen:
+                id: setting_screen_id
+                name: 'setting'

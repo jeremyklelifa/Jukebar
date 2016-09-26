@@ -35,3 +35,8 @@ On Windows and Linux, go to the Jukebar/ directory and run:
 To deploy on Android, go to the Jukebar/ directory and run:
 
     buildozer android_new debug deploy run
+
+## Credits
+
+ - [Jeremy Klelifa](http://github.com/jeremyklelifa)
+ - [Andre Miras](http://github.com/AndreMiras)

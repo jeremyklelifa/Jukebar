@@ -12,7 +12,6 @@ from kivy.core.audio import SoundLoader
 from mixers.jukebar_mixer_factory import JukebarMixerFactory
 
 
-musics = []
 MUSIC_DIRECTORY = "interrupt_songs"
 # Config.set('kivy', 'log_level', 'trace')
 jukebar_mixer = JukebarMixerFactory.create()
@@ -26,14 +25,6 @@ class Jukebar(object):
             stop_event (threading.Event): Used to stop the worker.
         """
         self._stop_event = stop_event
-
-    def load_mp3_files(self):
-        """
-        Creates the mp3 list from what is found in the directory.
-        """
-        files = os.listdir(MUSIC_DIRECTORY)
-        global musics
-        musics.extend(files)
 
     def play_music(self, title):
         title_path = os.path.join(MUSIC_DIRECTORY, title)
@@ -50,8 +41,8 @@ class Jukebar(object):
                 sleep(1)
 
     def play_next_random(self):
-        title_random_index = randint(0, len(musics)-1)
-        title = musics[title_random_index]
+        title_random_index = randint(0, len(self._musics)-1)
+        title = self._musics[title_random_index]
         self.play_music(title)
 
     def play_next(self):
@@ -79,11 +70,11 @@ class Jukebar(object):
             return False
         return self._stop_event.is_set()
 
-    def run(self, min_sleep_time=1, max_sleep_time=10):
+    def run(self, musics, min_sleep_time=1, max_sleep_time=10):
         """
         Starts the application for testing
         """
-        self.load_mp3_files()
+        self._musics = musics
         while not self.should_stop():
             random_time = randint(min_sleep_time, max_sleep_time)
             sleep(random_time)
@@ -92,15 +83,17 @@ class Jukebar(object):
 
 class JukebarThread(threading.Thread):
 
-    def __init__(self, min_sleep_time, max_sleep_time):
+    def __init__(self, musics, min_sleep_time, max_sleep_time):
         super(JukebarThread, self).__init__()
         self._stop_event = threading.Event()
+        self._musics = musics
         self._min_sleep_time = min_sleep_time
         self._max_sleep_time = max_sleep_time
         self.jukebar = Jukebar(stop_event=self._stop_event)
 
     def run(self):
         self.jukebar.run(
+                self._musics,
                 min_sleep_time=self._min_sleep_time,
                 max_sleep_time=self._max_sleep_time)
 
