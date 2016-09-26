@@ -3,6 +3,7 @@
 #:import webbrowser webbrowser
 #:import Toolbar kivymd.toolbar.Toolbar
 #:import MDSlider kivymd.slider.MDSlider
+#:import MDDropdownMenu kivymd.menu.MDDropdownMenu
 #:import OneLineListItem kivymd.list.OneLineListItem
 #:import MDCheckbox kivymd.selectioncontrols.MDCheckbox
 #:import NavigationDrawer kivymd.navigationdrawer.NavigationDrawer
@@ -127,8 +128,10 @@
                 height: dp(36)
 
             MDLabel:
-                text: 'Timer min: %s seconds' % (int(timer_min_id.value))
+                markup: True
+                text: 'Timer min: %s [ref=timer_unit]%s[/ref]' % (int(timer_min_id.value), root.timer_unit)
                 theme_text_color: 'Secondary'
+                on_ref_press: root.toggle_unit(root.timer_unit)
 
             MDSlider:
                 id: timer_min_id
@@ -137,8 +140,10 @@
                 value: 1
 
             MDLabel:
-                text: 'Timer max: %s seconds' % (int(timer_max_id.value))
+                markup: True
+                text: 'Timer max: %s [ref=timer_unit]%s[/ref]' % (int(timer_max_id.value), root.timer_unit)
                 theme_text_color: 'Secondary'
+                on_ref_press: root.toggle_unit(root.timer_unit)
 
             MDSlider:
                 id: timer_max_id

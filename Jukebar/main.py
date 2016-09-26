@@ -47,6 +47,10 @@ class MainScreen(Screen):
         cut_songs = app.cut_songs()
         min_sleep_time = self.get_timer_min_value()
         max_sleep_time = self.get_timer_max_value()
+        timer_unit = app.timer_unit()
+        if timer_unit == "minutes":
+            min_sleep_time *= 60
+            max_sleep_time *= 60
         self.jukebar_thread = JukebarThread(
             musics=cut_songs,
             min_sleep_time=min_sleep_time,
@@ -122,6 +126,7 @@ class SettingScreen(Screen):
     timer_max_property = ObjectProperty()
     timer_min_property = ObjectProperty()
     cut_songs_mdl_property = ObjectProperty()
+    timer_unit = StringProperty()
 
     def __init__(self, **kwargs):
         super(SettingScreen, self).__init__(**kwargs)
@@ -184,12 +189,20 @@ class SettingScreen(Screen):
             item.add_widget(checkbox)
             cut_songs_mdl_property.add_widget(item)
 
+    def update_timer_unit(self):
+        """
+        Loads the timer unit with the last saved state.
+        """
+        app = App.get_running_app()
+        self.timer_unit = app.timer_unit()
+
     def update_widgets(self):
         """
         Updates widgets with previous saved state.
         """
         self.update_cut_songs_list_view()
         self.update_min_max_sliders()
+        self.update_timer_unit()
 
     def load(self, path, filename):
         app = App.get_running_app()
@@ -200,6 +213,15 @@ class SettingScreen(Screen):
         app.store.put('cut_songs', list=cut_songs)
         self.update_cut_songs_list_view()
         self.dismiss_popup()
+
+    def toggle_unit(self, timer_unit):
+        if timer_unit == "seconds":
+            self.timer_unit = "minutes"
+        else:
+            self.timer_unit = "seconds"
+        app = App.get_running_app()
+        # updates the last used unit
+        app.store.put('timer_unit', value=self.timer_unit)
 
 
 class Controller(FloatLayout):
@@ -261,6 +283,16 @@ class ControllerApp(App):
         except KeyError:
             songs = []
         return songs
+
+    def timer_unit(self):
+        """
+        Returns the current timer unit value.
+        """
+        try:
+            unit = self.store.get('timer_unit')['value']
+        except KeyError:
+            unit = "seconds"
+        return unit
 
     def timer_min(self):
         """
