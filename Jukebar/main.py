@@ -109,9 +109,10 @@ class SettingScreen(Screen):
         app.store.put('timer_max', value=self.timer_max_property.value)
 
     def show_load(self):
-        home = expanduser("~")
+        app = App.get_running_app()
+        path = app.sound_path()
         content = LoadDialog(
-            load=self.load, cancel=self.dismiss_popup, path=home)
+            load=self.load, cancel=self.dismiss_popup, path=path)
         self._popup = Popup(title="Load file", content=content,
                             size_hint=(0.9, 0.9))
         self._popup.open()
@@ -162,6 +163,8 @@ class SettingScreen(Screen):
 
     def load(self, path, filename):
         app = App.get_running_app()
+        # updates the last used sound path
+        app.store.put('sound_path', value=path)
         cut_songs = app.cut_songs()
         cut_songs.extend(filename)
         app.store.put('cut_songs', list=cut_songs)
@@ -228,6 +231,18 @@ class ControllerApp(App):
         except KeyError:
             timer = 10
         return timer
+
+    def sound_path(self):
+        """
+        Returns the most relevant sound path location:
+        Returns the last used one or default to the home directory.
+        """
+        try:
+            path = self.store.get('sound_path')['value']
+        except KeyError:
+            path = expanduser("~")
+        return path
+
 
 if __name__ == '__main__':
     ControllerApp().run()
