@@ -25,9 +25,6 @@ class MainScreen(Screen):
         super(MainScreen, self).__init__(**kwargs)
         self.jukebar_thread = None
 
-    def on_settings_action(self):
-        print "open settings"
-
     def get_setting_screen(self):
         screen_manager = self.parent
         controller = screen_manager.parent
@@ -62,9 +59,25 @@ class MainScreen(Screen):
         self.jukebar_thread.stop()
         # self.jukebar_thread.join()
 
+    def before_start_checks(self):
+        """
+        Verifies some cut songs are available before starting.
+        Returns True if checks went OK.
+        """
+        app = App.get_running_app()
+        if len(app.cut_songs()) == 0:
+            popup = PopupMessage(
+                    title="Error",
+                    body="Your interruption songs list is empty.")
+            popup.open()
+            return False
+        return True
+
     def toggle_juke_action(self, button):
         action_start = button.text == "Start Juke"
         if action_start:
+            if not self.before_start_checks():
+                return
             self.start_juke_action()
             button.text = "Stop Juke"
         else:
@@ -77,6 +90,11 @@ class AboutScreen(Screen):
     Project source code and info available on GitHub at:
     [color=00BFFF][ref=github]https://github.com/jeremyklelifa/Jukebar[/ref][/color]
     """)
+
+
+class PopupMessage(Popup):
+    title = StringProperty()
+    body = StringProperty()
 
 
 class LoadDialog(FloatLayout):

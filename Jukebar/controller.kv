@@ -8,6 +8,15 @@
 #:import NavigationDrawer kivymd.navigationdrawer.NavigationDrawer
 
 
+<PopupMessage>:
+    size_hint: .5, .5
+    auto_dismiss: True
+    title: root.title
+    on_touch_down:
+        self.dismiss()
+    Label:
+        text: root.body
+
 <LoadDialog>:
     BoxLayout:
         size: root.size
