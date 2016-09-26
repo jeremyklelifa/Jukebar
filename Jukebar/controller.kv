@@ -1,5 +1,6 @@
 #:kivy 1.0
 #:import label kivy.uix.label
+#:import webbrowser webbrowser
 #:import Toolbar kivymd.toolbar.Toolbar
 #:import MDSlider kivymd.slider.MDSlider
 #:import OneLineListItem kivymd.list.OneLineListItem
@@ -115,12 +116,16 @@
                     value: 10
 
 <AboutScreen@Screen>:
-    BoxLayout:
-        orientation: 'vertical'
+    ScrollView:
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
 
-        MDLabel:
-            markup: True
-            text: '[size=45][b][color=00BFFF]Jukebar for drinkers[/color][/b][/size]\nNew line.'
+            MDLabel:
+                markup: True
+                text: root.about_text_property
+                theme_text_color: 'Primary'
+                on_ref_press: webbrowser.open('https://github.com/jeremyklelifa/Jukebar')
 
 
 <MainScreen@Screen>:

@@ -70,6 +70,13 @@ class MainScreen(Screen):
             self.stop_juke_action()
             button.text = "Start Juke"
 
+class AboutScreen(Screen):
+    about_text_property = StringProperty("" +
+    """
+    Project source code and info available on GitHub at:
+    [color=00BFFF][ref=github]https://github.com/jeremyklelifa/Jukebar[/ref][/color]
+    """)
+
 
 class LoadDialog(FloatLayout):
     path = StringProperty(None)
