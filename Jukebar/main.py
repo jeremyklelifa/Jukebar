@@ -24,7 +24,6 @@ class MainScreen(Screen):
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
-        self.jukebar_thread = None
 
     def get_setting_screen(self):
         screen_manager = self.parent
@@ -44,25 +43,11 @@ class MainScreen(Screen):
 
     def start_juke_action(self):
         app = App.get_running_app()
-        cut_songs = app.cut_songs()
-        min_sleep_time = self.get_timer_min_value()
-        max_sleep_time = self.get_timer_max_value()
-        timer_unit = app.timer_unit()
-        if timer_unit == "minutes":
-            min_sleep_time *= 60
-            max_sleep_time *= 60
-        self.jukebar_thread = JukebarThread(
-            musics=cut_songs,
-            min_sleep_time=min_sleep_time,
-            max_sleep_time=max_sleep_time,
-        )
-        self.jukebar_thread.start()
+        app.start_juke()
 
     def stop_juke_action(self):
-        if self.jukebar_thread is None:
-            return
-        self.jukebar_thread.stop()
-        # self.jukebar_thread.join()
+        app = App.get_running_app()
+        app.stop_juke()
 
     def before_start_checks(self):
         """
@@ -245,7 +230,16 @@ class ControllerApp(App):
         json_store_path = self.json_store_path
         self.store = JsonStore(json_store_path)
         self.nav_drawer = JukebarNavigationDrawer()
+        self.jukebar_thread = None
         return Controller()
+
+    def on_stop(self):
+        """
+        Makes sure the jukebar_thread is stopped.
+        """
+        print "on_stop 1"
+        self.stop_juke()
+        print "on_stop 2"
 
     def on_start(self):
         """
@@ -324,6 +318,27 @@ class ControllerApp(App):
         except KeyError:
             path = expanduser("~")
         return path
+
+    def start_juke(self):
+        cut_songs = self.cut_songs()
+        min_sleep_time = self.timer_min()
+        max_sleep_time = self.timer_max()
+        timer_unit = self.timer_unit()
+        if timer_unit == "minutes":
+            min_sleep_time *= 60
+            max_sleep_time *= 60
+        self.jukebar_thread = JukebarThread(
+            musics=cut_songs,
+            min_sleep_time=min_sleep_time,
+            max_sleep_time=max_sleep_time,
+        )
+        self.jukebar_thread.start()
+
+    def stop_juke(self):
+        if self.jukebar_thread is None:
+            return
+        self.jukebar_thread.stop()
+        # self.jukebar_thread.join()
 
 
 if __name__ == '__main__':
