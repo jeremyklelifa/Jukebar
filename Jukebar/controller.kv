@@ -94,36 +94,37 @@
         #     theme_text_color: 'Primary'
 
         BoxLayout:
-            orientation: 'horizontal'
+            orientation: 'vertical'
             size_hint_y: None
-            height: dp(100)
+            height: dp(200)
             spacing: 10
 
-            BoxLayout:
-                orientation: 'vertical'
+            MDLabel:
+                text: 'Timers'
+                theme_text_color: 'Secondary'
+                font_style: "Title"
+                size_hint_y: None
+                height: dp(36)
 
-                MDLabel:
-                    text: 'Timer min: %s seconds' % (int(timer_min_id.value))
-                    theme_text_color: 'Secondary'
+            MDLabel:
+                text: 'Timer min: %s seconds' % (int(timer_min_id.value))
+                theme_text_color: 'Secondary'
 
-                MDSlider:
-                    id: timer_min_id
-                    min: 0
-                    step: 1
-                    value: 1
+            MDSlider:
+                id: timer_min_id
+                min: 0
+                step: 1
+                value: 1
 
-            BoxLayout:
-                orientation: 'vertical'
+            MDLabel:
+                text: 'Timer max: %s seconds' % (int(timer_max_id.value))
+                theme_text_color: 'Secondary'
 
-                MDLabel:
-                    text: 'Timer max: %s seconds' % (int(timer_max_id.value))
-                    theme_text_color: 'Secondary'
-
-                MDSlider:
-                    id: timer_max_id
-                    min: 0
-                    step: 1
-                    value: 10
+            MDSlider:
+                id: timer_max_id
+                min: 0
+                step: 1
+                value: 10
 
 <AboutScreen@Screen>:
     ScrollView:
