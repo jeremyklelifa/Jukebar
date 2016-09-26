@@ -19,7 +19,6 @@ class OnCompletionListener(PythonJavaClass):
 
     @java_method('(Landroid/media/MediaPlayer;)V')
     def onCompletion(self, mp):
-        print 'onCompletion() called', mp
         # makes sure the sound.state gets updated
         self.sound.stop()
 
