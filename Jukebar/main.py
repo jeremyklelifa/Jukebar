@@ -1,6 +1,7 @@
 ﻿import os
 from os.path import expanduser
 from kivy.app import App
+from kivy.base import EventLoop
 from kivy.clock import Clock
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
@@ -194,6 +195,26 @@ class ControllerApp(App):
         self.store = JsonStore(json_store_path)
         self.nav_drawer = JukebarNavigationDrawer()
         return Controller()
+
+    def on_start(self):
+        """
+        Binds keyboard keys.
+        """
+	EventLoop.window.bind(on_keyboard=self.hook_keyboard)
+
+    def hook_keyboard(self, window, key, *largs):
+        """
+        Binds the escape key with screen manager actions.
+        Escapes the application if the current screen is "main"
+        otherwise goes back to the main screen.
+        """
+        escape_key = 27
+	if key == escape_key:
+	   # do what you want, return True for stopping the propagation
+           screen_manager = self.root.ids['screen_manager']
+           if screen_manager.current != 'main':
+               screen_manager.current = 'main'
+               return True
 
     @property
     def json_store_path(self):
