@@ -8,12 +8,14 @@ Jukebox for the drinkers.
 Tested under Windows 7 & Windows 10.
 
 	pip install -r requirements/windows.txt
+    garden install recycleview
 
 ### Linux
 #### Ubuntu Xenial 16.04
 
     apt install mesa-common-dev libgl1-mesa-dev libsmpeg0 python-gst-1.0
 	pip install -r requirements/linux.txt
+    garden install recycleview
 
 #### Gentoo
 
@@ -23,6 +25,7 @@ Tested under Windows 7 & Windows 10.
 Tested under Android 6.0.
 
     pip install -r requirements/android.txt
+    garden install recycleview
 
 ## Run or deploy
 On Windows and Linux, go to the Jukebar/ directory and run:
