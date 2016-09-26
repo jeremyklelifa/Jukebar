@@ -70,7 +70,8 @@ class MainScreen(Screen):
             popup = MDPopupMessage(
                     title="Error",
                     body="Your interruption songs list is empty.")
-            popup.add_action_button("Dismiss", action=lambda *x: popup.dismiss())
+            popup.add_action_button(
+                    "Dismiss", action=lambda *x: popup.dismiss())
             popup.open()
             return False
         return True
@@ -86,12 +87,15 @@ class MainScreen(Screen):
             self.stop_juke_action()
             button.text = "Start Juke"
 
+
+ABOUT_TEXT = "Project source code and info available on GitHub at:\n" + \
+    "[color=00BFFF][ref=github]" + \
+    "https://github.com/jeremyklelifa/Jukebar" + \
+    "[/ref][/color]"
+
+
 class AboutScreen(Screen):
-    about_text_property = StringProperty("" +
-    """
-    Project source code and info available on GitHub at:
-    [color=00BFFF][ref=github]https://github.com/jeremyklelifa/Jukebar[/ref][/color]
-    """)
+    about_text_property = StringProperty(ABOUT_TEXT)
 
 
 class PopupMessage(Popup):
@@ -225,7 +229,7 @@ class ControllerApp(App):
         """
         Binds keyboard keys.
         """
-	EventLoop.window.bind(on_keyboard=self.hook_keyboard)
+        EventLoop.window.bind(on_keyboard=self.hook_keyboard)
 
     def hook_keyboard(self, window, key, *largs):
         """
@@ -234,12 +238,12 @@ class ControllerApp(App):
         otherwise goes back to the main screen.
         """
         escape_key = 27
-	if key == escape_key:
-	   # do what you want, return True for stopping the propagation
-           screen_manager = self.root.ids['screen_manager']
-           if screen_manager.current != 'main':
-               screen_manager.current = 'main'
-               return True
+        if key == escape_key:
+            # do what you want, return True for stopping the propagation
+            screen_manager = self.root.ids['screen_manager']
+            if screen_manager.current != 'main':
+                screen_manager.current = 'main'
+                return True
 
     @property
     def json_store_path(self):
