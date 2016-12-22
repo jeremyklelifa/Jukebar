@@ -3,7 +3,7 @@ enum34==1.1.5
 Kivy==1.9.1
 Kivy-Garden==0.1.4
 psutil==4.1.0
-pygame==1.9.2b8
+pygame==1.9.2
 Pygments==2.1.3
 # kivymd==0.1.2
 git+https://gitlab.com/kivymd/KivyMD.git@ab3d83bf012a6922005a3c382c5f1329c55195cd
